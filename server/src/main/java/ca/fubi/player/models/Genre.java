@@ -1,5 +1,8 @@
 package ca.fubi.player.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.*;
 
 @Entity

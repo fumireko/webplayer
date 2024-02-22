@@ -20,22 +20,25 @@ public class User {
   private Long id;
 
   @NotBlank
-  @Size(max = 20)
+  @Size(max = 64)
+  @Column(name = "username")
   private String username;
 
   @NotBlank
-  @Size(max = 50)
+  @Size(max = 64)
   @Email
+  @Column(name = "email")
   private String email;
 
   @NotBlank
-  @Size(max = 120)
+  @Size(max = 128)
+  @Column(name = "password")
   private String password;
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "tb_user_roles", 
-             joinColumns = @JoinColumn(name = "user_id"),
-             inverseJoinColumns = @JoinColumn(name = "role_id"))
+             joinColumns = @JoinColumn(name = "fk_user"),
+             inverseJoinColumns = @JoinColumn(name = "fk_role"))
   private Set<Role> roles = new HashSet<>();
 
   public User() {

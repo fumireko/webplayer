@@ -31,7 +31,12 @@ public class Artist {
     @OneToMany(mappedBy = "artist")
     private List<AlbumArtist> albums = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "artists")
+    @ManyToMany
+    @JoinTable(
+        name = "tb_artists_genre",
+        joinColumns = @JoinColumn(name = "fk_artist"),
+        inverseJoinColumns = @JoinColumn(name = "fk_genre")
+    )
     private Set<Genre> genres = new HashSet<>();
 
     public Artist() {}
@@ -88,7 +93,7 @@ public class Artist {
         this.genres.add(genre);
     }
     
-    public void setGenres(Set<Genre> genres) {
+    public void setGenres (Set<Genre> genres) {
 		this.genres = genres;
 	}
 }
