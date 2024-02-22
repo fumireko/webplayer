@@ -1,9 +1,10 @@
 package ca.fubi.player.models;
 
+import ca.fubi.player.models.enums.EnumRole;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "tb_roles")
 public class Role {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,9 +14,7 @@ public class Role {
   @Column(length = 20)
   private EnumRole name;
 
-  public Role() {
-
-  }
+  public Role() {}
 
   public Role(EnumRole name) {
     this.name = name;

@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.fubi.player.models.EnumRole;
 import ca.fubi.player.models.Role;
 import ca.fubi.player.models.User;
+import ca.fubi.player.models.enums.EnumRole;
 import ca.fubi.player.payload.request.LoginRequest;
 import ca.fubi.player.payload.request.SignupRequest;
 import ca.fubi.player.payload.response.MessageResponse;
