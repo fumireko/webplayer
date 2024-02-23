@@ -25,7 +25,7 @@ public class Artist {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "country_code", length = 2)
+    @Column(name = "country_code", columnDefinition = "CHAR(2)")
     private EnumCountry countryCode;
 
     @OneToMany(mappedBy = "artist")
