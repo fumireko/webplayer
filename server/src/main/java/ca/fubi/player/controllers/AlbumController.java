@@ -33,6 +33,11 @@ public class AlbumController {
 	@Autowired
 	private AlbumRepository albumRepo;
 	
+	@GetMapping("/")
+	public ResponseEntity<List<Album>> getAlbums(){
+		return ResponseEntity.ok(albumRepo.findAll());
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<Album>> getAlbumById(@PathVariable Long id){
 		if(id != null) {

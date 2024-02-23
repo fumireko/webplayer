@@ -1,5 +1,6 @@
 package ca.fubi.player.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.fubi.player.models.Genre;
+import ca.fubi.player.models.Song;
 import ca.fubi.player.repository.GenreRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -24,6 +26,11 @@ import ca.fubi.player.repository.GenreRepository;
 public class GenreController {
 	@Autowired
 	private GenreRepository genreRepo;
+	
+	@GetMapping("/")
+	public ResponseEntity<List<Genre>> getGenres(){
+		return ResponseEntity.ok(genreRepo.findAll());
+	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<Genre>> getGenreById(@PathVariable Long id){

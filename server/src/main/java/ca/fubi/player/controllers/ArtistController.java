@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.fubi.player.models.Artist;
 import ca.fubi.player.models.Genre;
+import ca.fubi.player.models.Song;
 import ca.fubi.player.models.enums.EnumCountry;
 import ca.fubi.player.repository.ArtistRepository;
 
@@ -28,6 +29,11 @@ import ca.fubi.player.repository.ArtistRepository;
 public class ArtistController {
 	@Autowired
 	private ArtistRepository artistRepo;
+	
+	@GetMapping("/")
+	public ResponseEntity<List<Artist>> getArtists(){
+		return ResponseEntity.ok(artistRepo.findAll());
+	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<Artist>> getArtistById(@PathVariable Long id){

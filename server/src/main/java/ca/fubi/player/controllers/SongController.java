@@ -31,6 +31,11 @@ public class SongController {
 	@Autowired
 	private AlbumRepository albumRepo;
 	
+	@GetMapping("/")
+	public ResponseEntity<List<Song>> getSongs(){
+		return ResponseEntity.ok(songRepo.findAll());
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<Song>> getSongById(@PathVariable Long id){
 		if(id != null) {

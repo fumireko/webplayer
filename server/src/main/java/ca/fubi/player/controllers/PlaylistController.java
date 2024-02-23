@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.fubi.player.models.Playlist;
+import ca.fubi.player.models.Song;
 import ca.fubi.player.models.User;
 import ca.fubi.player.repository.PlaylistRepository;
 import ca.fubi.player.repository.SongRepository;
@@ -34,6 +35,11 @@ public class PlaylistController {
 	
 	@Autowired
 	private SongRepository songRepo;
+	
+	@GetMapping("/")
+	public ResponseEntity<List<Playlist>> getPlaylists(){
+		return ResponseEntity.ok(playlistRepo.findAll());
+	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<Playlist>> getPlaylistById(@PathVariable Long id){
