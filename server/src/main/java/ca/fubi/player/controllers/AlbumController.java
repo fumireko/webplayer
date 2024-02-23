@@ -82,7 +82,13 @@ public class AlbumController {
 	
 	@PostMapping("/")
 	public ResponseEntity<?> createAlbum(@RequestBody Album a){
-		try { return ResponseEntity.ok(albumRepo.save(a)); }
+		try {
+			Artist artist = artistRepo.findById(a.getArtist().getId()).get();
+			artist.addAlbum(a);
+			artistRepo.save(artist);
+			//TODO fix relation
+			return ResponseEntity.ok(albumRepo.save(a)); 
+		}
 		catch (Exception e) { return ResponseEntity.internalServerError().body(e.toString()); }
 	}
 	
