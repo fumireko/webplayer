@@ -1,6 +1,7 @@
 package ca.fubi.player.models;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ca.fubi.player.models.relations.PlaylistSong;
@@ -63,9 +64,22 @@ public class Playlist {
         return songs;
     }
 
-    public void addPlaylistSong(PlaylistSong playlistSong) {
-    	playlistSong.setPlaylist(this); 
-    	songs.add(playlistSong);
+    public void addSong(Song song) {
+        PlaylistSong playlistSong = new PlaylistSong(song, this);
+        songs.add(playlistSong);
+        song.getPlaylists().add(playlistSong);
+    }
+    
+    public void removeSong(Song song) {
+        for (Iterator<PlaylistSong> iterator = songs.iterator(); iterator.hasNext();) {
+            PlaylistSong playlistSong = iterator.next();
+            if (playlistSong.getPlaylist().equals(this) && playlistSong.getSong().equals(song)) {
+                iterator.remove();
+                playlistSong.getSong().getPlaylists().remove(playlistSong);
+                playlistSong.setPlaylist(null);
+                playlistSong.setSong(null);
+            }
+        }
     }
     
     public void setPlaylistSongs(List<PlaylistSong> playlistSongs) {

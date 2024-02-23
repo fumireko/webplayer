@@ -71,4 +71,12 @@ public class Song {
 	public void setAlbum(Album album) {
 		this.album = album;
 	}
+	
+	public List<PlaylistSong> getPlaylists() {
+		return playlists;
+	}
+	
+	public void setPlaylists(List<PlaylistSong> playlists) {
+		this.playlists = playlists;
+	}
 }
