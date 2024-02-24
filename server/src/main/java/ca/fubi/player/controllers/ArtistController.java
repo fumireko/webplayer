@@ -93,6 +93,7 @@ public class ArtistController {
 			artist.setName(update.getName());
 			artist.setAlbums(update.getAlbums());
 			artist.setGenres(update.getGenres());
+			artist.setDescription(update.getDescription());
 			artist.setCountryCode(update.getCountryCode());
 			
 			return ResponseEntity.ok(artistRepo.save(artist));
