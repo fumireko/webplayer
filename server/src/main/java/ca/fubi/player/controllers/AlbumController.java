@@ -126,9 +126,15 @@ public class AlbumController {
 	        Artist artist = update.getArtist();
 	        album.setArtist(artist);
 
-	        Album updatedAlbum = albumRepo.save(album);
+	        Album savedAlbum = albumRepo.save(album);
+	        Artist savedArtist = artistRepo.save(artist);
+	        
+	        System.out.println("[DEBUG] /PUT album - Album ID: " + savedAlbum.getId());
+            System.out.println("[DEBUG] /PUT album - Artist ID: " + savedArtist.getId());
 
-	        return ResponseEntity.ok(updatedAlbum);
+            AlbumArtist albumArtist = new AlbumArtist(savedAlbum, savedArtist);
+            albumArtistRepo.save(albumArtist);
+	        return ResponseEntity.ok(savedAlbum);
 	    } else {
 	        return ResponseEntity.notFound().build();
 	    }

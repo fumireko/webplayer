@@ -37,6 +37,9 @@ public class ArtistController {
 	
 	@GetMapping("/")
 	public ResponseEntity<List<Artist>> getArtists(){
+		for(Artist i : artistRepo.findAll()) {
+			System.out.println("[DEBUG] /GET artists: " + i.getId());
+		}
 		return ResponseEntity.ok(artistRepo.findAll());
 	}
 	
