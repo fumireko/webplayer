@@ -21,6 +21,8 @@ import ca.fubi.player.models.Artist;
 import ca.fubi.player.models.Genre;
 import ca.fubi.player.models.Song;
 import ca.fubi.player.models.enums.EnumCountry;
+import ca.fubi.player.models.relations.AlbumArtist;
+import ca.fubi.player.repository.AlbumArtistRepository;
 import ca.fubi.player.repository.ArtistRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -29,6 +31,9 @@ import ca.fubi.player.repository.ArtistRepository;
 public class ArtistController {
 	@Autowired
 	private ArtistRepository artistRepo;
+	
+	@Autowired
+	private AlbumArtistRepository albumArtistRepo;
 	
 	@GetMapping("/")
 	public ResponseEntity<List<Artist>> getArtists(){
@@ -87,18 +92,27 @@ public class ArtistController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Artist> updateArtist(@PathVariable Long id, @RequestBody Artist update){
-		Optional<Artist> a = artistRepo.findById(id);
-		if(a.isPresent()) {
-			Artist artist = a.get();
-			artist.setName(update.getName());
-			artist.setAlbums(update.getAlbums());
-			artist.setGenres(update.getGenres());
-			artist.setDescription(update.getDescription());
-			artist.setCountryCode(update.getCountryCode());
-			
-			return ResponseEntity.ok(artistRepo.save(artist));
-		}
-		else return ResponseEntity.notFound().build();
+	    Optional<Artist> artistOptional = artistRepo.findById(id);
+	    if(artistOptional.isPresent()) {
+	        Artist artist = artistOptional.get();
+	        
+	        artist.setName(update.getName());
+	        artist.setDescription(update.getDescription());
+	        artist.setCountryCode(update.getCountryCode());
+	        artist.setGenres(update.getGenres());
+	        
+	        artist.getAlbums().clear();
+	        
+	        for (AlbumArtist albumArtist : update.getAlbums()) {
+	            artist.getAlbums().add(albumArtist);
+	            albumArtistRepo.save(albumArtist);
+	        }
+
+	        return ResponseEntity.ok(artistRepo.save(artist));
+	    }
+	    else {
+	        return ResponseEntity.notFound().build();
+	    }
 	}
 	
 	@DeleteMapping("/{id}")

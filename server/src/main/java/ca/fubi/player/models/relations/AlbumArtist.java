@@ -27,6 +27,7 @@ public class AlbumArtist {
     public AlbumArtist(Album album, Artist artist) {
     	this.setAlbum(album);
     	this.setArtist(artist);
+    	this.id = new AlbumArtistId(album.getId(), artist.getId());
 	}
 
     public AlbumArtistId getId() {

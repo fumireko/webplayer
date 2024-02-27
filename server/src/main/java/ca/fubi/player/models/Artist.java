@@ -48,6 +48,18 @@ public class Artist {
     	this.setGenres(genres);
     }
     
+    @Override
+    public String toString() {
+        return "Artist{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", countryCode=" + countryCode +
+                ", albums=" + albums +
+                ", genres=" + genres +
+                '}';
+    }
+    
     public Long getId() {
 		return id;
 	}
@@ -80,7 +92,7 @@ public class Artist {
 		this.countryCode = countryCode;
 	}
     
-    public List<AlbumArtist> getAlbums() {
+    public List<AlbumArtist> getAlbums() { 
 		return albums;
 	}
     
