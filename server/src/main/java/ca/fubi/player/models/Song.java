@@ -3,7 +3,7 @@ package ca.fubi.player.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.fubi.player.models.relations.PlaylistSong;
+import ca.fubi.player.models.associations.PlaylistSong;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

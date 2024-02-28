@@ -1,8 +1,7 @@
-package ca.fubi.player.models.relations;
+package ca.fubi.player.models.associations;
 
 import ca.fubi.player.models.Album;
 import ca.fubi.player.models.Artist;
-import ca.fubi.player.models.ids.AlbumArtistId;
 import jakarta.persistence.*;
 
 @Entity

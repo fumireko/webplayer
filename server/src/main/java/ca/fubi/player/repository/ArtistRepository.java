@@ -12,8 +12,6 @@ import ca.fubi.player.models.Genre;
 import java.util.List;
 import ca.fubi.player.models.enums.EnumCountry;
 
-
-
 @Repository
 public interface ArtistRepository extends JpaRepository<Artist, Long>{
 	Optional<Artist> findById(Long id);

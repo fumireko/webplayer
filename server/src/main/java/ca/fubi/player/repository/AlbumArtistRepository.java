@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import ca.fubi.player.models.Album;
 import ca.fubi.player.models.Artist;
-import ca.fubi.player.models.relations.AlbumArtist;
+import ca.fubi.player.models.associations.AlbumArtist;
 
 @Repository
 public interface AlbumArtistRepository extends JpaRepository<AlbumArtist, Long> {

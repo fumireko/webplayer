@@ -13,5 +13,4 @@ import ca.fubi.player.models.Artist;
 public interface AlbumRepository extends JpaRepository<Album, Long>{
 	Optional<Album> findById(Long id);
 	Optional<Album> findByTitle(String title);
-	List<Album> findByArtist(Artist artist);
 }

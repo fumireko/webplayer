@@ -1,6 +1,10 @@
 package ca.fubi.player.models;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -25,14 +29,19 @@ public class Album {
     @Column(name = "release_date")
     private Date releaseDate;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_artist") 
-    private Artist artist;
+    @ManyToMany
+    @JsonIgnoreProperties("albums")
+    @JoinTable(
+        name = "tb_albums_artists",
+        joinColumns = @JoinColumn(name = "fk_album"),
+        inverseJoinColumns = @JoinColumn(name = "fk_artist")
+    )
+    private Set<Artist> artists = new HashSet<>();
 
     public Album() {}
     
-    public Album(Artist artist, String title, Date releaseDate, String imageUrl) {
-    	this.setArtist(artist);
+    public Album(Set<Artist> artists, String title, Date releaseDate, String imageUrl) {
+    	this.setArtists(artists);
     	this.setTitle(title);
     	this.setReleaseDate(releaseDate);
     	this.setImageUrl(imageUrl);
@@ -71,11 +80,11 @@ public class Album {
         this.releaseDate = releaseDate;
     }
 
-    public Artist getArtist() {
-        return artist;
-    }
-
-    public void setArtist(Artist artist) {
-        this.artist = artist;
-    }
+    public Set<Artist> getArtists() {
+		return artists;
+	}
+    
+    public void setArtists(Set<Artist> artists) {
+		this.artists = artists;
+	}
 }

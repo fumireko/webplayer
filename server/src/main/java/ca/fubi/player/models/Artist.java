@@ -6,8 +6,9 @@ import jakarta.validation.constraints.Size;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import ca.fubi.player.models.enums.EnumCountry;
-import ca.fubi.player.models.relations.AlbumArtist;
 
 @Entity
 @Table(name = "tb_artists")
@@ -28,8 +29,9 @@ public class Artist {
     @Column(name = "country_code", columnDefinition = "CHAR(4)")
     private EnumCountry countryCode;
 
-    @OneToMany(mappedBy = "artist")
-    private List<AlbumArtist> albums = new ArrayList<>();
+    @ManyToMany(mappedBy = "artists")
+    @JsonIgnoreProperties("artists")
+    private Set<Album> albums = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -41,12 +43,14 @@ public class Artist {
 
     public Artist() {}
     
-    public Artist(String name, EnumCountry countryCode, List<AlbumArtist> albums, Set<Genre> genres) {
+    public Artist(String name, EnumCountry countryCode, Set<Album> albums, Set<Genre> genres) {
     	this.setName(name);
     	this.setCountryCode(countryCode);
     	this.setAlbums(albums);
     	this.setGenres(genres);
     }
+    
+    //Getters and setters
     
     @Override
     public String toString() {
@@ -92,16 +96,15 @@ public class Artist {
 		this.countryCode = countryCode;
 	}
     
-    public List<AlbumArtist> getAlbums() { 
+	public Set<Album> getAlbums() {
 		return albums;
 	}
     
-    public void addAlbum(Album album) {
-        AlbumArtist albumArtist = new AlbumArtist(album, this);
-        this.albums.add(albumArtist);
-    }
-    
-    public void setAlbums(List<AlbumArtist> albums) {
+	public void addAlbum(Album a) {
+		albums.add(a);
+	}
+	
+	public void setAlbums(Set<Album> albums) {
 		this.albums = albums;
 	}
     

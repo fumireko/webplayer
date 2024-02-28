@@ -1,11 +1,10 @@
-package ca.fubi.player.models.relations;
+package ca.fubi.player.models.associations;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
 import ca.fubi.player.models.Playlist;
 import ca.fubi.player.models.Song;
-import ca.fubi.player.models.ids.PlaylistSongId;
 
 @Entity
 @Table(name = "tb_playlist_songs")

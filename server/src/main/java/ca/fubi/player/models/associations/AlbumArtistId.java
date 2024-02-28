@@ -1,4 +1,4 @@
-package ca.fubi.player.models.ids;
+package ca.fubi.player.models.associations;
 
 import java.io.Serializable;
 import java.util.Objects;

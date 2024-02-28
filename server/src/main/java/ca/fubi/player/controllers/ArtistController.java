@@ -2,7 +2,6 @@ package ca.fubi.player.controllers;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.fubi.player.models.Album;
 import ca.fubi.player.models.Artist;
 import ca.fubi.player.models.Genre;
-import ca.fubi.player.models.Song;
 import ca.fubi.player.models.enums.EnumCountry;
-import ca.fubi.player.models.relations.AlbumArtist;
-import ca.fubi.player.repository.AlbumArtistRepository;
+import ca.fubi.player.repository.AlbumRepository;
 import ca.fubi.player.repository.ArtistRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,7 +31,7 @@ public class ArtistController {
 	private ArtistRepository artistRepo;
 	
 	@Autowired
-	private AlbumArtistRepository albumArtistRepo;
+	private AlbumRepository albumRepo;
 	
 	@GetMapping("/")
 	public ResponseEntity<List<Artist>> getArtists(){
@@ -106,9 +104,9 @@ public class ArtistController {
 	        
 	        artist.getAlbums().clear();
 	        
-	        for (AlbumArtist albumArtist : update.getAlbums()) {
-	            artist.getAlbums().add(albumArtist);
-	            albumArtistRepo.save(albumArtist);
+	        for (Album album: update.getAlbums()) {
+	            artist.getAlbums().add(album);
+	            albumRepo.save(album);
 	        }
 
 	        return ResponseEntity.ok(artistRepo.save(artist));
