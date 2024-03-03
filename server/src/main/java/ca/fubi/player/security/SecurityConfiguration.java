@@ -26,11 +26,11 @@ public class SecurityConfiguration {
             "/users/signin",
             "/users/signup",
             "/users",
-            "/api/albums/",
-            "/api/artists/",
-            "/api/genres/",
-            "/api/playlists/",
-            "/api/songs/"
+            "/api/albums/*",
+            "/api/artists/*",
+            "/api/genres/*",
+            "/api/playlists/*",
+            "/api/songs/*"
     };
 
     // Endpoints que requerem autenticação para serem acessados
