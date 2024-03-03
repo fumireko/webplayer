@@ -1,3 +1,19 @@
+CREATE TABLE IF NOT EXISTS tb_artists (
+    id_artist SERIAL PRIMARY KEY,
+    artist_name VARCHAR(512) NOT NULL UNIQUE,
+    description TEXT, 
+    country_code CHAR(2)
+);
+
+CREATE TABLE IF NOT EXISTS tb_albums (
+    id_album SERIAL PRIMARY KEY,
+    album_title VARCHAR(512) NOT NULL,
+	album_image_url VARCHAR(512),
+    release_date TIMESTAMP,
+    fk_artist INTEGER,
+    FOREIGN KEY (fk_artist) REFERENCES tb_artists(id_artist) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS tb_roles (
     id_role SERIAL PRIMARY KEY,
     role_name VARCHAR(255) NOT NULL UNIQUE
@@ -25,22 +41,6 @@ CREATE TABLE IF NOT EXISTS tb_songs (
     fk_album INTEGER,
     FOREIGN KEY (fk_album) REFERENCES tb_albums(id_album) ON DELETE CASCADE
 );	
-
-CREATE TABLE IF NOT EXISTS tb_albums (
-    id_album SERIAL PRIMARY KEY,
-    album_title VARCHAR(512) NOT NULL,
-	album_image_url VARCHAR(512),
-    release_date TIMESTAMP,
-    fk_artist INTEGER,
-    FOREIGN KEY (fk_artist) REFERENCES tb_artists(id_artist) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS tb_artists (
-    id_artist SERIAL PRIMARY KEY,
-    artist_name VARCHAR(512) NOT NULL UNIQUE,
-    description TEXT, 
-    country_code CHAR(2)
-);
 
 CREATE TABLE IF NOT EXISTS tb_playlists (
     id_playlist SERIAL PRIMARY KEY,
