@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS tb_songs_album (
     FOREIGN KEY (fk_album) REFERENCES tb_albums(id_album) ON DELETE CASCADE
 );
 
-	CREATE TABLE IF NOT EXISTS tb_albums_artist (
+	CREATE TABLE IF NOT EXISTS tb_albums_artists (
 		fk_album INT,
 		fk_artist INT,
 		PRIMARY KEY (fk_album, fk_artist),
