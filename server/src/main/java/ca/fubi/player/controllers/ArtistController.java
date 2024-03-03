@@ -93,28 +93,19 @@ public class ArtistController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Artist> updateArtist(@PathVariable Long id, @RequestBody Artist update){
-	    Optional<Artist> artistOptional = artistRepo.findById(id);
-	    if(artistOptional.isPresent()) {
-	        Artist artist = artistOptional.get();
-	        
-	        artist.setName(update.getName());
-	        artist.setDescription(update.getDescription());
-	        artist.setCountryCode(update.getCountryCode());
-	        artist.setGenres(update.getGenres());
-	        
-	        artist.getAlbums().clear();
-	        
-	        for (Album album: update.getAlbums()) {
-	            artist.getAlbums().add(album);
-	            albumRepo.save(album);
-	        }
-
-	        return ResponseEntity.ok(artistRepo.save(artist));
-	    }
-	    else {
-	        return ResponseEntity.notFound().build();
-	    }
+	    return artistRepo.findById(id)
+	            .map(artist -> {
+	                artist.setName(update.getName());
+	                artist.setDescription(update.getDescription());
+	                artist.setCountryCode(update.getCountryCode());
+	                artist.setGenres(update.getGenres());
+	                artist.getAlbums().clear();
+	                artist.getAlbums().addAll(update.getAlbums());
+	                return ResponseEntity.ok(artistRepo.save(artist));
+	            })
+	            .orElse(ResponseEntity.notFound().build());
 	}
+
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<Artist>> deleteArtist(@PathVariable Long id){

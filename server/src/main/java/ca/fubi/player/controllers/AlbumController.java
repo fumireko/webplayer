@@ -21,6 +21,7 @@ import ca.fubi.player.models.dto.AlbumArtistDTO;
 import ca.fubi.player.repository.AlbumArtistRepository;
 import ca.fubi.player.repository.AlbumRepository;
 import ca.fubi.player.repository.ArtistRepository;
+import ca.fubi.player.repository.SongRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class AlbumController {
 	private AlbumRepository albumRepo;
 	
 	@Autowired
-	private AlbumArtistRepository albumArtistRepo;
+	private SongRepository songRepo;
 	
 	@GetMapping("/")
 	public ResponseEntity<List<Album>> getAlbums(){
@@ -72,8 +73,7 @@ public class AlbumController {
 		}
 		else return ResponseEntity.badRequest().build();
 	}
-	
-	/*
+
 	@GetMapping("/artist")
 	public ResponseEntity<List<Album>> getAlbumsByArtistID(@RequestParam(name = "value", required = true) Long artistId) {
 		if(artistId != null) {
@@ -83,45 +83,44 @@ public class AlbumController {
 			if(a.isEmpty()) 
 				 return ResponseEntity.notFound().build();
 			else return ResponseEntity.ok(
-							albumRepo.findByArtist(a.get()).stream()
+							albumRepo.findByArtists(a.get()).stream()
 							.collect(Collectors.toList())
 						);
 		}
 		else return ResponseEntity.badRequest().build();
-	}*/
+	}
 	
-    @PostMapping("/")
-    public ResponseEntity<?> createAlbum(@RequestBody Album rq) {
-        try {
-        	for(Artist a : rq.getArtists()) {;
-        		a.addAlbum(rq);
-        		artistRepo.save(a);
-        	}
-            
-            return ResponseEntity.ok(albumRepo.save(rq));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.toString());
-        }
-    }
-	
+	@PostMapping("/")
+	public ResponseEntity<?> createAlbum(@RequestBody Album rq) {
+	    try {
+	        Album savedAlbum = albumRepo.save(rq);
+	        savedAlbum.getArtists().forEach(artist -> {
+	            artist.addAlbum(savedAlbum);
+	            artistRepo.save(artist);
+	        });
+	        savedAlbum.getSongs().forEach(song -> {
+	        	song.setAlbum(savedAlbum);
+	        	songRepo.save(song);
+	        });
+	        return ResponseEntity.ok(savedAlbum);
+	    } catch (Exception e) {
+	        return ResponseEntity.internalServerError().body(e.toString());
+	    }
+	}
+
 	@PutMapping("/{id}")
 	public ResponseEntity<Album> updateAlbum(@PathVariable Long id, @RequestBody Album update) {
-	    Optional<Album> albumOptional = albumRepo.findById(id);
-	    if (albumOptional.isPresent()) {
-	        Album album = albumOptional.get();
-
-	        album.setTitle(update.getTitle());
-	        album.setImageUrl(update.getImageUrl());
-	        album.setReleaseDate(update.getReleaseDate());
-	        album.setArtists(update.getArtists());
-
-	        for(Artist i : update.getArtists())
-	        	artistRepo.save(i);
-	        
-	        return ResponseEntity.ok(albumRepo.save(album));
-	    } else {
-	        return ResponseEntity.notFound().build();
-	    }
+	    return albumRepo.findById(id)
+	            .map(album -> {
+	                album.setTitle(update.getTitle());
+	                album.setImageUrl(update.getImageUrl());
+	                album.setReleaseDate(update.getReleaseDate());
+	                album.setArtists(update.getArtists());
+	                update.getSongs().forEach(songRepo::save);
+	                update.getArtists().forEach(artistRepo::save);
+	                return ResponseEntity.ok(albumRepo.save(album));
+	            })
+	            .orElse(ResponseEntity.notFound().build());
 	}
 
 	

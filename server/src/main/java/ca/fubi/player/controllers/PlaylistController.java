@@ -99,48 +99,50 @@ public class PlaylistController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Playlist> updatePlaylist(@PathVariable Long id, @RequestBody Playlist update){
-		Optional<Playlist> p = playlistRepo.findById(id);
-		if(p.isPresent()) {
-			Playlist playlist = p.get();
-			playlist.setName(update.getName());
-			playlist.setUser(update.getUser());
-			playlist.setPlaylistSongs(update.getPlaylistSongs());
-			
-			return ResponseEntity.ok(playlistRepo.save(playlist));
-		}
-		else return ResponseEntity.notFound().build();
+	    return playlistRepo.findById(id)
+	            .map(playlist -> {
+	                playlist.setName(update.getName());
+	                playlist.setUser(update.getUser());
+	                playlist.setSongs(update.getSongs());
+	                return ResponseEntity.ok(playlistRepo.save(playlist));
+	            })
+	            .orElse(ResponseEntity.notFound().build());
 	}
-	
+
 	@PutMapping("/{id}/add-song/{songId}")
 	public ResponseEntity<Playlist> addSongToPlaylist(@PathVariable Long id, @PathVariable Long songId) {
-		if(id != null && songId != null) {
-			
-			Optional<Playlist> p = playlistRepo.findById(id);
-			
-			if(p.isPresent()) {
-				Playlist playlist = p.get();
-				playlist.addSong(songRepo.findById(songId).get());
-				return ResponseEntity.ok(playlistRepo.save(playlist));
-			}
-			else return ResponseEntity.notFound().build();
-		}
-		else return ResponseEntity.badRequest().build();
+	    if(id != null && songId != null) {
+	        Optional<Playlist> playlistOptional = playlistRepo.findById(id);
+	        Optional<Song> songOptional = songRepo.findById(songId);
+	        
+	        if(playlistOptional.isPresent() && songOptional.isPresent()) {
+	            Playlist playlist = playlistOptional.get();
+	            playlist.getSongs().add(songOptional.get());
+	            return ResponseEntity.ok(playlistRepo.save(playlist));
+	        } else {
+	            return ResponseEntity.notFound().build();
+	        }
+	    } else {
+	        return ResponseEntity.badRequest().build();
+	    }
 	}
-	
+
 	@PutMapping("/{id}/remove-song/{songId}")
 	public ResponseEntity<Playlist> removeSongFromPlaylist(@PathVariable Long id, @PathVariable Long songId) {
-		if(id != null && songId != null) {
-			
-			Optional<Playlist> p = playlistRepo.findById(id);
-			
-			if(p.isPresent()) {
-				Playlist playlist = p.get();
-				playlist.removeSong(songRepo.findById(songId).get());
-				return ResponseEntity.ok(playlistRepo.save(playlist));
-			}
-			else return ResponseEntity.notFound().build();
-		}
-		else return ResponseEntity.badRequest().build();
+	    if(id != null && songId != null) {
+	        Optional<Playlist> playlistOptional = playlistRepo.findById(id);
+	        Optional<Song> songOptional = songRepo.findById(songId);
+	        
+	        if(playlistOptional.isPresent() && songOptional.isPresent()) {
+	            Playlist playlist = playlistOptional.get();
+	            playlist.getSongs().remove(songOptional.get());
+	            return ResponseEntity.ok(playlistRepo.save(playlist));
+	        } else {
+	            return ResponseEntity.notFound().build();
+	        }
+	    } else {
+	        return ResponseEntity.badRequest().build();
+	    }
 	}
 	
 	@DeleteMapping("/{id}")

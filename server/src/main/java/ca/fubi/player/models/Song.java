@@ -3,7 +3,8 @@ package ca.fubi.player.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.fubi.player.models.associations.PlaylistSong;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,11 +27,13 @@ public class Song {
 	private int length;
 	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "fk_album")
 	private Album album;
 
-    @OneToMany(mappedBy = "song")
-    private List<PlaylistSong> playlists = new ArrayList<>();
+	@JsonIgnore
+	@ManyToMany(mappedBy = "songs")
+	private List<Playlist> playlists = new ArrayList<>();
 	
 	public Song() {}
 	
@@ -72,11 +75,11 @@ public class Song {
 		this.album = album;
 	}
 	
-	public List<PlaylistSong> getPlaylists() {
+	public List<Playlist> getPlaylists() {
 		return playlists;
 	}
 	
-	public void setPlaylists(List<PlaylistSong> playlists) {
+	public void setPlaylists(List<Playlist> playlists) {
 		this.playlists = playlists;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -37,6 +38,14 @@ public class Album {
         inverseJoinColumns = @JoinColumn(name = "fk_artist")
     )
     private Set<Artist> artists = new HashSet<>();
+    
+    @OneToMany
+    @JoinTable(
+        name = "tb_songs_album",
+        joinColumns = @JoinColumn(name = "fk_song"),
+        inverseJoinColumns = @JoinColumn(name = "fk_album")
+    )
+    private Set<Song> songs = new HashSet<>();
 
     public Album() {}
     
@@ -86,5 +95,13 @@ public class Album {
     
     public void setArtists(Set<Artist> artists) {
 		this.artists = artists;
+	}
+    
+    public Set<Song> getSongs() {
+		return songs;
+	}
+    
+    public void setSongs(Set<Song> songs) {
+		this.songs = songs;
 	}
 }

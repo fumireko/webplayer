@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import ca.fubi.player.models.associations.PlaylistSong;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,8 +25,13 @@ public class Playlist {
     @JoinColumn(name = "fk_user")
     private User user;
 
-    @OneToMany(mappedBy = "playlist")
-    private List<PlaylistSong> songs = new ArrayList<>(); // Changed to PlaylistSong association
+    @ManyToMany
+    @JoinTable(
+        name = "tb_songs_playlist",
+        joinColumns = @JoinColumn(name = "fk_playlist"),
+        inverseJoinColumns = @JoinColumn(name = "fk_song")
+    )
+    private List<Song> songs = new ArrayList<>();
 
     public Playlist() {}
     
@@ -60,29 +64,11 @@ public class Playlist {
 		this.user = user;
 	}
     
-    public List<PlaylistSong> getPlaylistSongs() {
+    public List<Song> getSongs() {
         return songs;
     }
-
-    public void addSong(Song song) {
-        PlaylistSong playlistSong = new PlaylistSong(song, this);
-        songs.add(playlistSong);
-        song.getPlaylists().add(playlistSong);
-    }
     
-    public void removeSong(Song song) {
-        for (Iterator<PlaylistSong> iterator = songs.iterator(); iterator.hasNext();) {
-            PlaylistSong playlistSong = iterator.next();
-            if (playlistSong.getPlaylist().equals(this) && playlistSong.getSong().equals(song)) {
-                iterator.remove();
-                playlistSong.getSong().getPlaylists().remove(playlistSong);
-                playlistSong.setPlaylist(null);
-                playlistSong.setSong(null);
-            }
-        }
-    }
-    
-    public void setPlaylistSongs(List<PlaylistSong> playlistSongs) {
-		this.songs = playlistSongs;
+    public void setSongs(List<Song> songs) {
+		this.songs = songs;
 	}
 }
