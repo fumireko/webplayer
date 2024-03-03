@@ -7,8 +7,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_users",
        uniqueConstraints = {
            @UniqueConstraint(columnNames = "username"),
@@ -40,15 +48,6 @@ public class User {
              joinColumns = @JoinColumn(name = "fk_user"),
              inverseJoinColumns = @JoinColumn(name = "fk_role"))
   private Set<Role> roles = new HashSet<>();
-
-  public User() {
-  }
-
-  public User(String username, String email, String password) {
-    this.username = username;
-    this.email = email;
-    this.password = password;
-  }
 
   public Long getId() {
     return id;
@@ -89,4 +88,5 @@ public class User {
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
   }
+
 }

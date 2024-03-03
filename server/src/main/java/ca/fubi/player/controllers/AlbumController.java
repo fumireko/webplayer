@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.fubi.player.models.Album;
 import ca.fubi.player.models.Artist;
-import ca.fubi.player.models.associations.AlbumArtist;
-import ca.fubi.player.models.associations.AlbumArtistId;
-import ca.fubi.player.models.dto.AlbumArtistDTO;
-import ca.fubi.player.repository.AlbumArtistRepository;
 import ca.fubi.player.repository.AlbumRepository;
 import ca.fubi.player.repository.ArtistRepository;
 import ca.fubi.player.repository.SongRepository;
