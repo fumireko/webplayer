@@ -1,10 +1,17 @@
 package ca.fubi.player.controllers;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import ca.fubi.player.models.User;
+import ca.fubi.player.repository.UserRepository;
 
 //for Angular Client (withCredentials)
 //@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
@@ -12,6 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/test")
 public class TestController {
+
+  @Autowired
+  private UserRepository repo;
+	
+  @GetMapping("/")
+  public ResponseEntity<List<User>> getAllUsers(){
+	  return ResponseEntity.ok(repo.findAll());
+  }
+	
   @GetMapping("/all")
   public String allAccess() {
     return "Public Content.";

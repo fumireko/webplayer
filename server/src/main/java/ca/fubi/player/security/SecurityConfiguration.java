@@ -25,13 +25,13 @@ public class SecurityConfiguration {
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/users/signin",
             "/users/signup",
-            "/users",
+            "/users/*",
             "/api/albums/*",
             "/api/artists/*",
             "/api/genres/*",
             "/api/playlists/*",
-            "/api/songs/*"
-    };
+            "/api/songs/*",
+            "/api/test/*"    };
 
     // Endpoints que requerem autenticação para serem acessados
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
