@@ -1,32 +1,44 @@
 package ca.fubi.player.controllers;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.fubi.player.models.Role;
+import ca.fubi.player.models.User;
 import ca.fubi.player.models.dto.CreateUserDTO;
 import ca.fubi.player.models.dto.LoginUserDTO;
 import ca.fubi.player.models.dto.RecoveryJwtTokenDTO;
+import ca.fubi.player.repository.UserRepository;
 import ca.fubi.player.security.services.UserService;
 
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/signin")
-    public ResponseEntity<RecoveryJwtTokenDTO> authenticateUser(@RequestBody LoginUserDTO loginUserDto) {
+    public ResponseEntity<UserTokenDTO> authenticateUser(@RequestBody LoginUserDTO loginUserDto) {
         RecoveryJwtTokenDTO token = userService.authenticateUser(loginUserDto);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        User u = userRepository.findByEmail(loginUserDto.email()).get();
+        return ResponseEntity.ok(new UserTokenDTO(u.getUsername(), u.getEmail(), u.getPassword(), token.token(), u.getRoles()));
     }
 
     @PostMapping("/signup")
@@ -37,7 +49,7 @@ public class UserController {
     
     @PostMapping("/signout")
     public ResponseEntity<RecoveryJwtTokenDTO> clearToken() {
-        ResponseCookie cookie = ResponseCookie.from("your-cookie-name", "")
+        ResponseCookie cookie = ResponseCookie.from("auth-user", "")
                 .maxAge(0)
                 .httpOnly(true)
                 .path("/")
@@ -65,3 +77,10 @@ public class UserController {
     }
 
 }
+
+record UserTokenDTO (
+		String username,
+		String email,
+		String password,
+		String token,
+        Set<Role> roles) {}

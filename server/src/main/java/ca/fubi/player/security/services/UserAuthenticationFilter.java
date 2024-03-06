@@ -57,8 +57,11 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        return Arrays.asList(SecurityConfiguration.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).stream()
+        boolean a = Arrays.asList(SecurityConfiguration.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).stream()
                 .anyMatch(endpoint -> requestURI.startsWith(endpoint));
+        
+        System.out.println(requestURI + " " + a);
+        return a;
     }
 
 }

@@ -43,10 +43,14 @@ public class UserService {
     }
 
     public void createUser(CreateUserDTO createUserDto) {
+    	
+    	System.out.println(createUserDto);
+    	
     	Set<Role> roles = new HashSet<>();
         roles.add(Role.builder().name(createUserDto.role()).build());
         
         User newUser = User.builder()
+        		.username(createUserDto.username())
                 .email(createUserDto.email())
                 .password(securityConfiguration.passwordEncoder().encode(createUserDto.password()))
                 .roles(roles)

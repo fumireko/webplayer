@@ -23,9 +23,10 @@ public class SecurityConfiguration {
     private UserAuthenticationFilter userAuthenticationFilter;
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/users/signin",
-            "/users/signup",
-            "/users/*",
+    		"/users/*",
+            "/users/signin/*",
+            "/users/signup/*",
+            "/users/signout/*",
             "/api/albums/*",
             "/api/artists/*",
             "/api/genres/*",

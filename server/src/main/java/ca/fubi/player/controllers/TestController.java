@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.fubi.player.models.User;
 import ca.fubi.player.repository.UserRepository;
 
-//for Angular Client (withCredentials)
-//@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/test")
 public class TestController {
