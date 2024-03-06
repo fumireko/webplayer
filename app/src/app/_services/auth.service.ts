@@ -14,22 +14,10 @@ const httpOptions = {
 export class AuthService {
   constructor(private http: HttpClient) {}
 
-  login(username: string, password: string): Observable<any> {
+  login(email: string, password: string): Observable<any> {
     return this.http.post(
       AUTH_API + 'signin',
       {
-        username,
-        password,
-      },
-      httpOptions
-    );
-  }
-
-  register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(
-      AUTH_API + 'signup',
-      {
-        username,
         email,
         password,
       },
@@ -37,7 +25,23 @@ export class AuthService {
     );
   }
 
+  register(username: string, email: string, password: string): Observable<any> {
+    let role = "ROLE_USER"
+  
+    return this.http.post(
+      AUTH_API + 'signup',
+      {
+        username,
+        email,
+        password,
+        role
+      },
+      httpOptions
+    );
+  }
+
   logout(): Observable<any> {
+    window.sessionStorage.removeItem('auth-user')
     return this.http.post(AUTH_API + 'signout', { }, httpOptions);
   }
 }
