@@ -29,7 +29,7 @@ export class AuthService {
       username,
       email,
       password,
-      "role": "ROLE_USER"
+      "roles": [{"id": "1", "name": "ROLE_USER"}]
     },
     httpOptions
     )

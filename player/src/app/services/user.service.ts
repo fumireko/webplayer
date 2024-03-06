@@ -10,18 +10,18 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getPublicContent(): Observable<any> {
-    return this.http.get(AppComponent.PUBLIC_BACKEND_URL + 'all', { responseType: 'text' });
+    return this.http.get(AppComponent.PUBLIC_BACKEND_URL + '/api/test/all', { responseType: 'text' });
   }
 
   getUserBoard(): Observable<any> {
-    return this.http.get(AppComponent.PUBLIC_BACKEND_URL + 'user', { responseType: 'text' });
+    return this.http.get(AppComponent.PUBLIC_BACKEND_URL + '/api/test/user', { responseType: 'text' });
   }
   
   getModeratorBoard(): Observable<any> {
-    return this.http.get(AppComponent.PUBLIC_BACKEND_URL + 'mod', { responseType: 'text' });
+    return this.http.get(AppComponent.PUBLIC_BACKEND_URL + '/api/test/mod', { responseType: 'text' });
   }
 
   getAdminBoard(): Observable<any> {
-    return this.http.get(AppComponent.PUBLIC_BACKEND_URL + 'admin', { responseType: 'text' });
+    return this.http.get(AppComponent.PUBLIC_BACKEND_URL + '/api/test/admin', { responseType: 'text' });
   }
 }

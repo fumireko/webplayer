@@ -12,6 +12,8 @@ import { HomeComponent } from './home/home.component';
 import { httpInterceptorProviders } from './services/http.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { ProfileComponent } from './boards/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -21,9 +23,11 @@ import { HttpClientModule } from '@angular/common/http';
     AdminComponent,
     ModeratorComponent,
     UserComponent,
-    HomeComponent
+    HomeComponent,
+    ProfileComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
