@@ -23,7 +23,7 @@ import ca.fubi.player.repository.PlaylistRepository;
 import ca.fubi.player.repository.SongRepository;
 import ca.fubi.player.repository.UserRepository;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/playlists")
 public class PlaylistController {

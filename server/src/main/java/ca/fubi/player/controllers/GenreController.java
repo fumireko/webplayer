@@ -20,7 +20,7 @@ import ca.fubi.player.models.Genre;
 import ca.fubi.player.models.Song;
 import ca.fubi.player.repository.GenreRepository;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/genres")
 public class GenreController {
