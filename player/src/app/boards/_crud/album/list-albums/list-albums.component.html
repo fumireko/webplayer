@@ -1,0 +1,88 @@
+<ul class="nav nav-tabs mx-auto my-3">
+    <li class="nav-item">
+      <a class="nav-link" href="#">Overview</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="#">Album</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Artist</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Genre</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Playlist</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Song</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">User</a>
+    </li>
+</ul>
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Cover</th>
+        <th>Release Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let album of albums" (click)="showDetails(album)">
+        <td>{{ album.id }}</td>
+        <td>{{ album.title }}</td>
+        <td>{{ album.imageUrl }}</td>
+        <td>{{ album.releaseDate }}</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <div *ngIf="selectedAlbum" class="my-3">
+    <hr>
+    <p class="text-center font-weight-bold">Album details</p>
+  </div>
+
+  <div *ngIf="selectedAlbum" class="row">
+    <div class="col-6">
+        <p class="fs-5">{{ selectedAlbum.title }} songs</p>
+        <table class="table table-sm">
+        <thead>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Length</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let song of selectedAlbum.songs">
+                <td>{{ song.id }}</td>
+                <td>{{ song.title }}</td>
+                <td>{{ song.length }}</td>
+            </tr>
+        </tbody>
+        </table>    
+    </div>
+
+    <div class="col-6">
+        <p class="fs-5">{{ selectedAlbum.title }} Artists</p>
+        <table class="table table-sm">
+          <thead>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Country</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let artist of selectedAlbum.artists">
+              <td>{{ artist.id }}</td>
+              <td>{{ artist.name }}</td>
+              <td>{{ artist.description }}</td>
+              <td>{{ artist.countryCode }}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+  

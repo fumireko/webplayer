@@ -1,0 +1,84 @@
+<ul class="nav nav-tabs mx-auto my-3">
+    <li class="nav-item">
+      <a class="nav-link" href="#">Overview</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Album</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Artist</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Genre</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="#">Playlist</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Song</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">User</a>
+    </li>
+</ul>
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>User</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let playlist of playlists" (click)="showDetails(playlist)">
+        <td>{{ playlist.id }}</td>
+        <td>{{ playlist.name }}</td>
+        <td>{{ playlist.user?.username }}</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <div *ngIf="selectedPlaylist" class="my-3">
+    <hr>
+    <p class="text-center font-weight-bold">Playlist details</p>
+  </div>
+
+  <div *ngIf="selectedPlaylist" class="row">
+    <div class="col-6">
+        <p class="fs-5">{{ selectedPlaylist.name }} songs</p>
+        <table class="table table-sm">
+        <thead>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Length</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let song of selectedPlaylist.songs">
+                <td>{{ song.id }}</td>
+                <td>{{ song.title }}</td>
+                <td>{{ song.length }}</td>
+            </tr>
+        </tbody>
+        </table>''    
+    </div>
+
+    <div class="col-6">
+        <p class="fs-5">{{ selectedPlaylist.name }} User</p>
+        <table class="table table-sm">
+          <thead>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of selectedPlaylist.user">
+              <td>{{ user.id }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+  

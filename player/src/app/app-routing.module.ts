@@ -3,10 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './auth/register/register.component';
-import { ProfileComponent } from './boards/profile/profile.component';
+import { ProfileComponent } from './boards/_profile/profile.component';
 import { UserComponent } from './boards/user/user.component';
 import { ModeratorComponent } from './boards/moderator/moderator.component';
 import { AdminComponent } from './boards/admin/admin.component';
+import { ListArtistsComponent } from './boards/_crud/artist/list-artists/list-artists.component';
+import { ListAlbumsComponent } from './boards/_crud/album/list-albums/list-albums.component';
+import { ListGenresComponent } from './boards/_crud/genre/list-genres/list-genres.component';
+import { ListPlaylistsComponent } from './boards/_crud/playlist/list-playlists/list-playlists.component';
+import { ListSongsComponent } from './boards/_crud/song/list-songs/list-songs.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -16,6 +21,11 @@ const routes: Routes = [
   { path: 'user', component: UserComponent },
   { path: 'mod', component: ModeratorComponent },
   { path: 'admin', component: AdminComponent },
+  { path: 'admin/artists', component: ListArtistsComponent },
+  { path: 'admin/albums', component: ListAlbumsComponent },
+  { path: 'admin/genres', component: ListGenresComponent },
+  { path: 'admin/playlists', component: ListPlaylistsComponent },
+  { path: 'admin/songs', component: ListSongsComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 
