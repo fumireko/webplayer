@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -27,7 +28,7 @@ public class Song {
 	private int length;
 	
 	@ManyToOne
-	@JsonIgnore
+	@JsonIgnoreProperties("songs")
 	@JoinColumn(name = "fk_album")
 	private Album album;
 
