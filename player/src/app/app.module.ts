@@ -19,6 +19,7 @@ import { ListAlbumsComponent } from './boards/_crud/album/list-albums/list-album
 import { ListGenresComponent } from './boards/_crud/genre/list-genres/list-genres.component';
 import { ListPlaylistsComponent } from './boards/_crud/playlist/list-playlists/list-playlists.component';
 import { ListSongsComponent } from './boards/_crud/song/list-songs/list-songs.component';
+import { MinutesPipe } from './shared/pipes/minutes.pipe';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { ListSongsComponent } from './boards/_crud/song/list-songs/list-songs.co
     ListAlbumsComponent,
     ListGenresComponent,
     ListPlaylistsComponent,
-    ListSongsComponent
+    ListSongsComponent,
+    MinutesPipe
   ],
   imports: [
     CommonModule,

@@ -22,63 +22,136 @@
     </li>
 </ul>
 
-<table class="table table-hover">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Length</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let song of songs" (click)="showDetails(song)">
-        <td>{{ song.id }}</td>
-        <td>{{ song.title }}</td>
-        <td>{{ song.length }}</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <div *ngIf="selectedSong" class="my-3">
-    <hr>
+<div class="row">
+  <div class="col-6" [ngClass]="{'col-12': !selectedSong}">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Length</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let song of songs" 
+        (click)="showDetails(song)" 
+        [ngClass]="{ 'table-primary': selectedSong && selectedSong.id === song.id }">
+          <td>{{ song.id }}</td>
+          <td>{{ song.title }}</td>
+          <td>{{ song.length }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-6" *ngIf="selectedSong">
     <p class="text-center font-weight-bold">Song details</p>
-  </div>
+    <ul>
+      <li><b>Title:</b>
+        <span *ngIf="!editSong; else titleInput"> {{ selectedSong.title }}</span>
+        <ng-template #titleInput>
+          <input class="form-control" type="text" [(ngModel)]="selectedSong.title">
+        </ng-template>
+      </li>
+      <li><b>Album:</b>
+        <span *ngIf="!editSong; else albumInput"> {{ selectedSong.album?.title }} by 
+          <span *ngFor="let artist of selectedSong.album?.artists; let last = last">
+            {{ artist.name }}{{ !last ? ', ' : '' }}
+          </span>
+        </span>
+        <ng-template #albumInput>
+          <select class="form-control">
+            <option *ngFor="let album of albums">
+              {{ album.title }} by 
+              <span *ngFor="let artist of album.artists; let last = last">
+                {{ artist.name }}{{ !last ? ', ' : '' }}
+              </span>
+            </option>
+          </select>
+        </ng-template>
+      </li>
+      <li><b>Length:</b> 
+        <span *ngIf="!editSong; else lengthInput"> {{ selectedSong.length | minutes}}</span>
+        <ng-template #lengthInput>
+          <input class="form-control" type="number" [(ngModel)]="selectedSong.length">
+        </ng-template>
+      </li>
+    </ul>
+    <div class="text-center">
+      <div class="btn-group">
+        <button 
+          class="btn btn-sm btn-primary mx-auto"
+          [ngClass]="{'btn-success': editSong}"
+          (click)="editSong = true">
+          <span *ngIf="editSong">Save</span>
+          <span *ngIf="!editSong">Edit song details</span>
+        </button>
+        <button *ngIf="editSong" 
+          class="btn btn-sm btn-secondary mx-auto" 
+          (click)="editSong = false">
+          Cancel
+        </button>
+      </div>
+    </div>      
 
-  <div *ngIf="selectedSong" class="row">
-    <div class="col-6">
-        <p class="fs-5">{{ selectedSong.title }} Album</p>
-        <table class="table table-sm">
-        <thead>
-            <th>Title</th>
-            <th>Release Date</th>
-            <th>Cover</th>
-        </thead>
-        <tbody>
-            <tr>
-            <td>{{ selectedSong.album.title }}</td>
-            <td>{{ selectedSong.album.releaseDate }}</td>
-            <td>{{ selectedSong.album.imageUrl }}</td>
-            </tr>
-        </tbody>
-        </table>    
-    </div>
+    <hr>
 
-    <div class="col-6">
-        <p class="fs-5">{{ selectedSong.title }} album songs</p>
-        <table class="table table-sm">
-        <thead>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Length</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let song of selectedSong.album.songs">
-                <td>{{ song.id }}</td>
-                <td>{{ song.title }}</td>
-                <td>{{ song.length }}</td>
-            </tr>
-        </tbody>
-        </table>    
+    <p class="text-center font-weight-bold">Album details</p>
+    <ul>
+      <li><b>Title:</b>
+        <span *ngIf="!editAlbum; else albumTitleInput"> {{ selectedSong.album.title }}</span>
+        <ng-template #albumTitleInput>
+          <input class="form-control" type="text" [(ngModel)]="selectedSong.album.title">
+        </ng-template>
+      </li>
+      <li><b>Release Date:</b>
+        <span *ngIf="!editAlbum; else albumReleaseDateInput"> {{ selectedSong.album.releaseDate | date }}</span>
+        <ng-template #albumReleaseDateInput>
+          <input class="form-control" type="date" [(ngModel)]="selectedSong.album.releaseDateString" useValueAsDate>
+        </ng-template>
+      </li>
+      <li><b>Cover:</b>
+        <span *ngIf="!editAlbum; else albumImageInput">
+          <img src="{{ selectedSong.album.imageUrl }}" alt="{{ selectedSong.album.name }}">
+        </span>
+        <ng-template #albumImageInput>
+          <input class="form-control" type="text" [(ngModel)]="selectedSong.album.imageUrl">
+        </ng-template>
+      </li>
+    </ul>
+    <div class="text-center">
+      <div class="btn-group">
+        <button 
+          class="btn btn-sm btn-primary mx-auto"
+          [ngClass]="{'btn-success': editAlbum}"
+          (click)="editAlbum = true">
+          <span *ngIf="editAlbum">Save</span>
+          <span *ngIf="!editAlbum">Edit album details</span>
+        </button>
+        <button *ngIf="editAlbum" 
+          class="btn btn-sm btn-secondary mx-auto" 
+          (click)="editAlbum = false">
+          Cancel
+        </button>
+      </div>
     </div>    
+        
+    <hr>
+
+    <p class="text-center font-weight-bold">Album songs</p>
+    <table class="table table-sm">
+      <thead>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Length</th>
+      </thead>
+      <tbody>
+          <tr *ngFor="let song of getSongsByAlbum(selectedSong.album)">
+              <td>{{ song.id }}</td>
+              <td>{{ song.title }}</td>
+              <td>{{ song.length | minutes }}</td>
+          </tr>
+      </tbody>
+    </table>    
   </div>
-  
+</div>
