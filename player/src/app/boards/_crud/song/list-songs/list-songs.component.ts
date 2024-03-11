@@ -12,7 +12,9 @@ export class ListSongsComponent {
 
   editSong: boolean = false;
   editAlbum: boolean = false;
-  selectedSong: any;
+  selectedSong: Song = new Song();
+  selectedSongAlbum: Album = new Album();
+  selectedSongReset: any;
   songs: Song[] = [];
   albums: Album[] = [];
 
@@ -25,9 +27,7 @@ export class ListSongsComponent {
     this.http.getSongs().subscribe((data: Song[]) => {
       this.songs = data;
       this.songs.forEach(s => {
-        if (s.album?.releaseDate) {
-          s.album.releaseDateString = s.album.releaseDate.toString().split('T')[0];
-        }
+        if (s.album?.releaseDate) s.album.releaseDateString = s.album.releaseDate.toString().split('T')[0];
       });
     });
      
@@ -39,5 +39,34 @@ export class ListSongsComponent {
 
   showDetails(_t11: Song){
     this.selectedSong = _t11;
+    if( _t11.album) this.selectedSongAlbum = _t11.album;
+    this.selectedSongReset = _t11;
+    console.log(JSON.stringify(this.selectedSong));
   }
+
+  stringify(o: any) { return JSON.stringify(o) }
+
+  compare(a: any, b: any){
+    let expression = (a.id === b.id);
+    console.log(a.id, '+', b.id, '=', expression);
+    return expression;
+  }
+
+  saveSong(){
+    if(this.editSong){ console.log("Saving song: " + JSON.stringify(this.selectedSong))}
+    else this.editSong = !this.editSong;
+  }
+
+  cancelSong() { 
+    console.log(JSON.stringify('RESET: ' + this.selectedSongReset));
+    this.selectedSong = this.selectedSongReset;
+    this.editSong = false;
+  }
+
+  saveAlbum(){
+    if(this.editAlbum){ console.log("Saving album: " + JSON.stringify(this.selectedSong.album))}
+    else this.editAlbum = !this.editAlbum;
+  }
+
+  cancelAlbum() { this.editAlbum = false }
 }
