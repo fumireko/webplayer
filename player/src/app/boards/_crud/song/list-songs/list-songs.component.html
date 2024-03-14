@@ -23,7 +23,7 @@
 </ul>
 
 <div class="row">
-<div class="col-6" [ngClass]="{'col-12': !selectedSong}">
+<div class="col-6" [ngClass]="{'col-12': !selectedSong.id}">
   <table class="table table-hover">
     <thead>
       <tr>
@@ -37,8 +37,8 @@
       <tr *ngFor="let song of songs" 
       (click)="showDetails(song)" 
       [ngClass]="{
-        'table-primary': selectedSong && selectedSong.id === song.id,
-        'table-secondary': selectedSong && selectedSongAlbum.id === song.album?.id && (!selectedSong || selectedSong.id !== song.id)
+        'table-primary': selectedSong.id && selectedSong.id === song.id,
+        'table-secondary': selectedSong.id && selectedSongAlbum.id === song.album?.id && (!selectedSong || selectedSong.id !== song.id)
       }">
         <td>{{ song.id }}</td>
         <td>{{ song.title }}</td>
@@ -49,7 +49,7 @@
   </table>
 </div>
 
-<div class="col-6" *ngIf="selectedSong">
+<div class="col-6" *ngIf="selectedSong.id">
   <form #songForm="ngForm"> 
     <p class="text-center font-weight-bold">Song details</p>
     <ul>
@@ -66,13 +66,19 @@
           </span>
         </span>
         <ng-template #albumInput>
-          <select class="form-control" [(ngModel)]="selectedSongAlbum" name="album">
-              <option *ngFor="let album of albums" [ngValue]="album">
-                  {{ album.title }} by 
-                  <span *ngFor="let artist of album.artists; let last = last">
-                      {{ artist.name }}{{ !last ? ', ' : '' }}
-                  </span>
-              </option>
+          <select class="form-control" name="album" [(ngModel)]="selectedSong.album">
+            <!-- Gambiarra da desgraça pra mostrar o álbum da música selecionada -->
+            <option [ngValue]="selectedSong.album" selected>
+              {{ selectedSong.album?.title }} by {{ getArtistsNames(selectedSong.album) }}
+            </option>
+            <!-- o ngModel não deixa bindar o objeto Album diretamente -->
+            <ng-container *ngFor="let album of albums">
+              <ng-container *ngIf="album.id !== selectedSong.album?.id">
+                <option [ngValue]="album">
+                  {{ album.title }} by {{ getArtistsNames(album) }}
+                </option>
+              </ng-container>
+            </ng-container>
           </select>
       </ng-template>      
       </li>
@@ -115,7 +121,7 @@
       <li><b>Release Date:</b>
         <span *ngIf="!editAlbum; else albumReleaseDateInput"> {{ selectedSongAlbum.releaseDate | date }}</span>
         <ng-template #albumReleaseDateInput>
-          <input class="form-control" type="date" [(ngModel)]="selectedSongAlbum.releaseDateString" useValueAsDate name="albumReleaseDate">
+          <input class="form-control" type="date" [(ngModel)]="selectedSongAlbum.releaseDate" useValueAsDate name="albumReleaseDate">
         </ng-template>
       </li>
       <li><b>Cover:</b>
