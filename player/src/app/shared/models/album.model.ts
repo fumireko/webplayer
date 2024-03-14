@@ -8,7 +8,6 @@ export class Album {
         public imageUrl?: string,
         public releaseDate?: Date,
         public artists?: Artist[],
-        public songs?: Song[],
-        public releaseDateString?: string
+        public songs?: Song[]
     ){}
 }

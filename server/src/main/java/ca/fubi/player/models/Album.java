@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -27,6 +28,7 @@ public class Album {
     @Column(name = "album_image_url")
     private String imageUrl;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "release_date")
     private Date releaseDate;
 
