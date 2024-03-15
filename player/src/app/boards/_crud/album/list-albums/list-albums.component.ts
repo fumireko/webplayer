@@ -9,7 +9,9 @@ import { Album } from '../../../../shared/models/album.model';
 })
 export class ListAlbumsComponent {
 
-  selectedAlbum: any;
+  editAlbum: boolean = false;
+  selectedAlbum: Album = new Album();
+
   albums: Album[] = [];
 
   constructor(private http: ApiService){}
@@ -22,5 +24,21 @@ export class ListAlbumsComponent {
 
   showDetails(_t11: Album) {
     this.selectedAlbum = _t11;
+  }
+
+  saveAlbum() {
+    if (this.editAlbum) { 
+      this.http.updateAlbum(this.selectedAlbum).subscribe(a => {
+        let album = this.albums.find(a => a.id == this.selectedAlbum)
+        album = a;
+        this.selectedAlbum = a;
+      });
+      this.editAlbum = !this.editAlbum;
+    } 
+    else this.editAlbum = !this.editAlbum;
+  }
+
+  cancelAlbum() {
+    this.editAlbum = false
   }
 }

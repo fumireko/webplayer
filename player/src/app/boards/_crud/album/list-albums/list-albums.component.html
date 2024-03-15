@@ -1,88 +1,129 @@
 <ul class="nav nav-tabs mx-auto my-3">
-    <li class="nav-item">
-      <a class="nav-link" href="#">Overview</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link active" href="#">Album</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Artist</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Genre</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Playlist</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Song</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">User</a>
-    </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Overview</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="admin/albums">Album</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="admin/artists">Artist</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="admin/genres">Genre</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="admin/playlists">Playlist</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="admin/songs">Song</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="admin/users">User</a>
+  </li>
 </ul>
 
-<table class="table table-hover">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Cover</th>
-        <th>Release Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let album of albums" (click)="showDetails(album)">
-        <td>{{ album.id }}</td>
-        <td>{{ album.title }}</td>
-        <td>{{ album.imageUrl }}</td>
-        <td>{{ album.releaseDate }}</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <div *ngIf="selectedAlbum" class="my-3">
+<div class="row">
+  <div class="col-6" [ngClass]="{'col-12': !selectedAlbum.id}">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Cover</th>
+          <th>Release Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let album of albums" (click)="showDetails(album)">
+          <td>{{ album.id }}</td>
+          <td>{{ album.title }}</td>
+          <td>{{ album.imageUrl }}</td>
+          <td>{{ album.releaseDate }}</td>
+        </tr>
+      </tbody>
+    </table>    
+  </div>
+  <div class="col-6" *ngIf="selectedAlbum.id">
+    <form #albumForm="ngForm"> 
+      <p class="text-center font-weight-bold">Album details</p>
+      <ul>
+        <li><b>Title:</b>
+          <span *ngIf="!editAlbum; else albumTitleInput"> {{ selectedAlbum.title }}</span>
+          <ng-template #albumTitleInput>
+          <input class="form-control" type="text" [(ngModel)]="selectedAlbum.title" name="albumTitle">
+          </ng-template>
+        </li>
+        <li><b>Release Date:</b>
+          <span *ngIf="!editAlbum; else albumReleaseDateInput"> {{ selectedAlbum.releaseDate | date }}</span>
+          <ng-template #albumReleaseDateInput>
+          <input class="form-control" type="date" [(ngModel)]="selectedAlbum.releaseDate" useValueAsDate name="albumReleaseDate">
+          </ng-template>
+        </li>
+        <li><b>Cover:</b><br>
+          <span *ngIf="!editAlbum; else albumImageInput">
+          <img class="img-fluid" src="{{ selectedAlbum.imageUrl }}" alt="{{ selectedAlbum.title }}">
+          </span>
+          <ng-template #albumImageInput>
+          <input class="form-control" type="text" [(ngModel)]="selectedAlbum.imageUrl" name="albumImageUrl">
+          </ng-template>
+        </li>
+      </ul>
+
+      <div class="text-center">
+        <div class="btn-group">
+          <button 
+          class="btn btn-sm btn-primary mx-auto"
+          [ngClass]="{'btn-success': editAlbum}"
+          (click)="saveAlbum()">
+          <span *ngIf="editAlbum">Save</span>
+          <span *ngIf="!editAlbum">Edit album details</span>
+          </button>
+
+          <button *ngIf="editAlbum" 
+          class="btn btn-sm btn-secondary mx-auto" 
+          (click)="cancelAlbum()">
+          Cancel
+          </button>
+        </div>
+      </div>      
+    </form>
+    
     <hr>
-    <p class="text-center font-weight-bold">Album details</p>
-  </div>
 
-  <div *ngIf="selectedAlbum" class="row">
-    <div class="col-6">
-        <p class="fs-5">{{ selectedAlbum.title }} songs</p>
-        <table class="table table-sm">
-        <thead>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Length</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let song of selectedAlbum.songs">
-                <td>{{ song.id }}</td>
-                <td>{{ song.title }}</td>
-                <td>{{ song.length }}</td>
-            </tr>
-        </tbody>
-        </table>    
-    </div>
+    <p class="text-center font-weight-bold">Album songs</p>
+    <table class="table table-sm">
+      <thead>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Length</th>
+      </thead>
+      <tbody>
+          <tr *ngFor="let song of selectedAlbum.songs">
+              <td>{{ song.id }}</td>
+              <td>{{ song.title }}</td>
+              <td>{{ song.length | minutes }}</td>
+          </tr>
+      </tbody>
+    </table>
+    
+    <hr>
 
-    <div class="col-6">
-        <p class="fs-5">{{ selectedAlbum.title }} Artists</p>
-        <table class="table table-sm">
-          <thead>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Country</th>
-          </thead>
-          <tbody>
-            <tr *ngFor="let artist of selectedAlbum.artists">
-              <td>{{ artist.id }}</td>
-              <td>{{ artist.name }}</td>
-              <td>{{ artist.description }}</td>
-              <td>{{ artist.countryCode }}</td>
-            </tr>
-          </tbody>
-        </table>
-    </div>
+    <p class="text-center font-weight-bold">Album artists</p>
+    <table class="table table-sm">
+      <thead>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Country</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let artist of selectedAlbum.artists">
+          <td>{{ artist.id }}</td>
+          <td>{{ artist.name }}</td>
+          <td>{{ artist.description }}</td>
+          <td>{{ artist.countryCode }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  
+</div>
