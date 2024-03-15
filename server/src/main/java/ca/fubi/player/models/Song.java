@@ -43,6 +43,8 @@ public class Song {
 		this.setAlbum(album);
 	}
 	
+	//Getters and setters
+	
 	public Long getId() {
 		return id;
 	}

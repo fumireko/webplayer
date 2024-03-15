@@ -49,7 +49,7 @@ public class AlbumController {
 		if(id != null) {
 			
 			Optional<Album> a = albumRepo.findById(id);
-			
+			System.out.println("Size of songs array: " + a.get().getSongs().size());
 			if(a.isEmpty())
 				 return ResponseEntity.notFound().build();
 			else return ResponseEntity.ok(a);

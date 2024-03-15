@@ -41,12 +41,8 @@ public class Album {
     )
     private Set<Artist> artists = new HashSet<>();
     
-    @OneToMany
-    @JoinTable(
-        name = "tb_songs_album",
-        joinColumns = @JoinColumn(name = "fk_song"),
-        inverseJoinColumns = @JoinColumn(name = "fk_album")
-    )
+    @OneToMany(mappedBy = "album")
+    @JsonIgnoreProperties("songs")
     private Set<Song> songs = new HashSet<>();
 
     public Album() {}
