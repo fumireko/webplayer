@@ -23,7 +23,6 @@ public class Song {
 	@Column(name = "song_title")
 	private String title;
 	
-	@NotBlank
 	@Column(name = "song_length")
 	private int length;
 	

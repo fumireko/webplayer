@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { Song } from '../../../../shared/models/song.model';
 import { Album } from '../../../../shared/models/album.model';
+import { BehaviorSubject, Observable, combineLatest, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-list-songs',
@@ -10,32 +11,44 @@ import { Album } from '../../../../shared/models/album.model';
 })
 export class ListSongsComponent {
 
-  @Input() songData: Album | null = null;
-  @Output() songDataChange: EventEmitter<Album | null> = new EventEmitter<Album | null>();
-
   editSong: boolean = false;
   editAlbum: boolean = false;
   selectedSong: Song = new Song();
   selectedSongAlbum: Album = new Album();
   selectedSongReset: string = "";
 
+  songs$: Observable<Song[]> | null = null;
   songs: Song[] = [];
   albums: Album[] = [];
   resetSongs: string = "";
   resetAlbums: string = "";
 
+  sortedColumn$ = new BehaviorSubject<string>('');
+
   constructor(private http: ApiService){}
 
-  ngOnInit(){
+  ngOnInit() {
     this.http.getAlbums().subscribe((data: Album[]) => {
       this.resetAlbums = JSON.stringify(data);
       this.albums = data;
-    })
+    });
     this.http.getSongs().subscribe((data: Song[]) => {
       this.resetSongs = JSON.stringify(data);
       this.songs = data;
-    });  
+    
+      this.songs$ = combineLatest(
+        this.sortedColumn$,
+        of(this.songs)
+      ).pipe(
+        map(([sortColumn, songs]) => sortColumn ? this.sortByColumn(songs, sortColumn) : songs)
+      );
+  
+      this.songs$.subscribe(songs => {
+        console.log(JSON.stringify(songs));
+      });
+    });
   }
+  
 
   getSongsByAlbum(album: Album): Song[] {
     return this.songs.filter(song => song.album?.id === album.id);
@@ -55,8 +68,17 @@ export class ListSongsComponent {
   saveSong(){
     if(this.editSong){
       this.selectedSongAlbum = this.selectedSong.album!;
-      this.editAlbum = !this.editAlbum;
-      this.updateListing();
+      this.http.updateSong(this.selectedSong).subscribe(s => {
+        let song = this.songs.find(s => s.id == this.selectedSong.id)
+        song = s;
+        this.selectedSong = s;
+      })
+      this.http.updateAlbum(this.selectedSongAlbum).subscribe(a => {
+        let album = this.albums.find(a => a.id == this.selectedSongAlbum.id);
+        album = a;
+        this.selectedSongAlbum = a;
+      });
+      this.editSong = !this.editSong;
     }
     else this.editSong = !this.editSong;
   }
@@ -69,8 +91,12 @@ export class ListSongsComponent {
   saveAlbum() {
     if (this.editAlbum) { 
       this.songs.filter(s => s.album?.id === this.selectedSong.album?.id).forEach(e => e.album = this.selectedSong.album);
+      this.http.updateAlbum(this.selectedSongAlbum).subscribe(a => {
+        let album = this.albums.find(a => a.id == this.selectedSongAlbum)
+        album = a;
+        this.selectedSongAlbum = a;
+      });
       this.editAlbum = !this.editAlbum;
-      this.updateListing();
     } 
     else this.editAlbum = !this.editAlbum;
   }
@@ -80,16 +106,25 @@ export class ListSongsComponent {
     this.editAlbum = false
   }
 
-  updateListing(){
-    this.http.getAlbums().subscribe((data: Album[]) => {
-      this.resetAlbums = JSON.stringify(data);
-      this.albums = data;
-    })
-    this.http.getSongs().subscribe((data: Song[]) => {
-      this.resetSongs = JSON.stringify(data);
-      this.songs = data;
-    });
+  sortOn(column: string) {
+    this.sortedColumn$.next(column);
   }
+
+  sortByColumn(list: any[] | undefined, column: string, direction = 'desc'): any[] {
+    let sortedArray = (list || []).sort((a, b) => {
+      const propA = column.split('.').reduce((obj, key) => obj[key], a);
+      const propB = column.split('.').reduce((obj, key) => obj[key], b);
+  
+      if (propA > propB) {
+        return (direction === 'desc') ? 1 : -1;
+      }
+      if (propA < propB) {
+        return (direction === 'desc') ? -1 : 1;
+      }
+      return 0;
+    });
+    return sortedArray;
+  }  
 
   resetListing(){
     this.songs = JSON.parse(this.resetSongs);

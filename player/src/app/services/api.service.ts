@@ -34,4 +34,12 @@ export class ApiService {
   getSongs(): Observable<Song[]> {
     return this.http.get<Song[]>(AppComponent.PUBLIC_BACKEND_URL + '/api/songs/', { withCredentials: false });
   }
+
+  updateSong(s: Song): Observable<Song> {
+    return this.http.put<Song>(`${AppComponent.PUBLIC_BACKEND_URL}/api/songs/${s.id}`, s, { withCredentials: false });
+  }
+  
+  updateAlbum(a: Album): Observable<Album> {
+    return this.http.put<Album>(`${AppComponent.PUBLIC_BACKEND_URL}/api/albums/${a.id}`, a, { withCredentials: false });
+  }  
 }

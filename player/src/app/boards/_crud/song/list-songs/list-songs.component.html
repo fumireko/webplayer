@@ -27,14 +27,14 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Length</th>
-        <th>Album</th>
+        <th><a (click)="sortOn('id')">ID</a></th>
+        <th><a (click)="sortOn('title')">Title</a></th>
+        <th><a (click)="sortOn('length')">Length</a></th>
+        <th><a (click)="sortOn('album.title')">Album</a></th>
       </tr>
-    </thead>
+    </thead>    
     <tbody>
-      <tr *ngFor="let song of songs" 
+      <tr *ngFor="let song of songs$ | async" 
       (click)="showDetails(song)" 
       [ngClass]="{
         'table-primary': selectedSong.id && selectedSong.id === song.id,
@@ -124,7 +124,7 @@
           <input class="form-control" type="date" [(ngModel)]="selectedSongAlbum.releaseDate" useValueAsDate name="albumReleaseDate">
         </ng-template>
       </li>
-      <li><b>Cover:</b>
+      <li><b>Cover:</b><br>
         <span *ngIf="!editAlbum; else albumImageInput">
           <img class="img-fluid" src="{{ selectedSongAlbum.imageUrl }}" alt="{{ selectedSongAlbum.title }}">
         </span>
