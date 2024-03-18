@@ -81,13 +81,67 @@
 
           <button *ngIf="editAlbum" 
           class="btn btn-sm btn-secondary mx-auto" 
-          (click)="cancelAlbum()">
+          (click)="resetEdit()">
           Cancel
           </button>
         </div>
       </div>      
     </form>
     
+    <hr>
+
+    <p class="text-center font-weight-bold">Album artists</p>
+    <table class="table table-sm">
+      <thead>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>
+          <button (click)="toggleAddArtist()" class="btn btn-sm btn-success">Add</button>
+        </th>
+      </thead>
+      <tbody>
+        <tr *ngIf="addArtistToggle">
+          <td colspan="3">
+            <select class="form-control" name="newArtist" [(ngModel)]="newArtist">
+              <option *ngFor="let artist of filterArtists()" [ngValue]="artist">{{ artist.name }}</option>
+            </select>                     
+          </td>
+          <td class="btn-group">
+            <button class="btn btn-sm btn-success" (click)="addArtist()">Add</button>
+            <button class="btn btn-sm btn-secondary" (click)="resetEdit()">Cancel</button>
+          </td>
+        </tr>
+        <tr *ngFor="let artist of selectedAlbum.artists; let i = index">
+          <ng-container *ngIf="editIndex !== i">
+            <td>{{ artist.id }}</td>
+            <td>{{ artist.name }}</td>
+            <td>{{ artist.description }}</td>
+          </ng-container>
+          <ng-container *ngIf="editIndex === i">
+            <td colspan="3">
+              <select class="form-control" name="newArtist" [(ngModel)]="selectedAlbum.artists![i]">
+                <option [ngValue]="selectedAlbum.artists![i]" selected> {{ selectedAlbum.artists![i].name }} </option>
+                <ng-container *ngFor="let artist of artists"><ng-container *ngIf="artist.id !== selectedAlbum.artists![i].id">
+                    <option [ngValue]="artist">{{ artist.name }}</option>
+                </ng-container></ng-container>
+              </select>
+            </td>
+          </ng-container>
+          <td class="btn-group">
+            <ng-container *ngIf="editIndex === i">
+              <button class="btn btn-sm btn-success" (click)="saveAlbum()">Save</button>
+              <button class="btn btn-sm btn-secondary" (click)="resetEdit()">Cancel</button>
+            </ng-container>
+            <ng-container *ngIf="editIndex !== i">
+              <button class="btn btn-sm btn-primary" (click)="toggleEditArtist(i)">Edit</button>
+              <button class="btn btn-sm btn-danger" (click)="removeArtist(i)">Remove</button>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+        
     <hr>
 
     <p class="text-center font-weight-bold">Album songs</p>
@@ -103,26 +157,6 @@
               <td>{{ song.title }}</td>
               <td>{{ song.length | minutes }}</td>
           </tr>
-      </tbody>
-    </table>
-    
-    <hr>
-
-    <p class="text-center font-weight-bold">Album artists</p>
-    <table class="table table-sm">
-      <thead>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Country</th>
-      </thead>
-      <tbody>
-        <tr *ngFor="let artist of selectedAlbum.artists">
-          <td>{{ artist.id }}</td>
-          <td>{{ artist.name }}</td>
-          <td>{{ artist.description }}</td>
-          <td>{{ artist.countryCode }}</td>
-        </tr>
       </tbody>
     </table>
   </div>

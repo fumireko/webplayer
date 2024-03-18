@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { Album } from '../../../../shared/models/album.model';
+import { Artist } from '../../../../shared/models/artist.model';
 
 @Component({
   selector: 'app-list-albums',
@@ -9,36 +10,81 @@ import { Album } from '../../../../shared/models/album.model';
 })
 export class ListAlbumsComponent {
 
+  addArtistToggle: boolean = false;
   editAlbum: boolean = false;
+  editArtist: boolean = false;
   selectedAlbum: Album = new Album();
-
+  editIndex: number = -1;
+  newArtist: Artist = new Artist();
   albums: Album[] = [];
+  artists: Artist[] = [];
 
   constructor(private http: ApiService){}
 
   ngOnInit(){
+    this.loadAlbums();
+    this.loadArtists();
+  }
+
+  loadAlbums() {
     this.http.getAlbums().subscribe((data: Album[]) => {
       this.albums = data;
     });
   }
 
-  showDetails(_t11: Album) {
-    this.selectedAlbum = _t11;
+  loadArtists() {
+    this.http.getArtists().subscribe((data: Artist[]) => {
+      this.artists = data;
+    });
+  }
+
+  showDetails(album: Album) {
+    this.selectedAlbum = album;
+  }
+
+  toggleEditAlbum() {
+    this.editAlbum = !this.editAlbum;
+  }
+
+  toggleAddArtist(){
+    this.addArtistToggle = !this.addArtistToggle;
+  }
+
+  toggleEditArtist(index: number) {
+    this.editIndex = index;
+    this.editArtist = !this.editArtist;
+  }
+
+  addArtist() {
+    this.selectedAlbum.artists?.push(this.newArtist);
+    this.saveAlbum();
+  }
+
+  removeArtist(index: number) {
+    this.selectedAlbum.artists?.splice(index, 1);
+    this.saveAlbum();
+    this.resetEdit();
   }
 
   saveAlbum() {
-    if (this.editAlbum) { 
-      this.http.updateAlbum(this.selectedAlbum).subscribe(a => {
-        let album = this.albums.find(a => a.id == this.selectedAlbum)
-        album = a;
-        this.selectedAlbum = a;
-      });
-      this.editAlbum = !this.editAlbum;
-    } 
-    else this.editAlbum = !this.editAlbum;
+    this.resetEdit();
+    this.http.updateAlbum(this.selectedAlbum).subscribe(album => {
+      this.selectedAlbum = album;
+    });
   }
 
-  cancelAlbum() {
-    this.editAlbum = false
+  resetEdit() {
+    this.editIndex = -1;
+    this.editAlbum = false;
+    this.editArtist = false;
+    this.addArtistToggle = false;
+    this.newArtist = new Artist();
+  }
+
+  filterArtists(): Artist[] {
+    if (!this.selectedAlbum || !this.selectedAlbum.artists) {
+      return this.artists;
+    }
+    return this.artists.filter(artist => !this.selectedAlbum.artists!.some(a => a.id === artist.id));
   }
 }
