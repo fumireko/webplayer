@@ -91,7 +91,7 @@
     <hr>
 
     <p class="text-center font-weight-bold">Album artists</p>
-    <table class="table table-sm">
+    <table class="table table-hover table-sm">
       <thead>
         <th>ID</th>
         <th>Name</th>
@@ -112,7 +112,7 @@
             <button class="btn btn-sm btn-secondary" (click)="resetEdit()">Cancel</button>
           </td>
         </tr>
-        <tr *ngFor="let artist of selectedAlbum.artists; let i = index">
+        <tr *ngFor="let artist of selectedAlbum.artists; let i = index" [routerLink]="['/admin/artists', artist.id]">
           <ng-container *ngIf="editIndex !== i">
             <td>{{ artist.id }}</td>
             <td>{{ artist.name }}</td>

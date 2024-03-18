@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { Artist } from '../../../../shared/models/artist.model';
 import { Genre } from '../../../../shared/models/genre.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-list-artists',
@@ -20,11 +21,19 @@ export class ListArtistsComponent {
   artists: Artist[] = [];
   genres: Genre[] = [];
 
-  constructor(private http: ApiService){}
+  constructor(private http: ApiService,
+              private route: ActivatedRoute){}
 
   ngOnInit(){
     this.http.getArtists().subscribe((data: Artist[]) => {
       this.artists = data;
+      this.route.paramMap.subscribe(params => {
+        const s = this.artists.find(a => a.id == parseInt(params.get('id')!))
+        if (s) {
+          this.selectedArtist = s;
+          this.showDetails(s);
+        }
+      })  
     });
     this.http.getGenres().subscribe((data: Genre[]) => {
       this.genres = data;

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { Album } from '../../../../shared/models/album.model';
 import { Artist } from '../../../../shared/models/artist.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-list-albums',
@@ -20,7 +21,8 @@ export class ListAlbumsComponent {
   albums: Album[] = [];
   artists: Artist[] = [];
 
-  constructor(private http: ApiService){}
+  constructor(private http: ApiService,
+              private route: ActivatedRoute){}
 
   ngOnInit(){
     this.loadAlbums();
@@ -36,6 +38,13 @@ export class ListAlbumsComponent {
   loadArtists() {
     this.http.getArtists().subscribe((data: Artist[]) => {
       this.artists = data;
+      this.route.paramMap.subscribe(params => {
+        const s = this.albums.find(album => album.id == parseInt(params.get('id')!))
+        if (s) {
+          this.selectedAlbum = s;
+          this.showDetails(s);
+        }
+      })  
     });
   }
 
