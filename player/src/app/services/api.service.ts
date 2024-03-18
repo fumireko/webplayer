@@ -42,4 +42,8 @@ export class ApiService {
   updateAlbum(a: Album): Observable<Album> {
     return this.http.put<Album>(`${AppComponent.PUBLIC_BACKEND_URL}/api/albums/${a.id}`, a, { withCredentials: false });
   }  
+
+  updateArtist(a: Artist): Observable<Artist> {
+    return this.http.put<Artist>(`${AppComponent.PUBLIC_BACKEND_URL}/api/artists/${a.id}`, a, { withCredentials: false});
+  }
 }

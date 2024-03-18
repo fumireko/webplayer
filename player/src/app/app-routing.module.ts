@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'admin/genres', component: ListGenresComponent },
   { path: 'admin/playlists', component: ListPlaylistsComponent },
   { path: 'admin/songs', component: ListSongsComponent },
+  { path: 'admin/songs/:id', component: ListSongsComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

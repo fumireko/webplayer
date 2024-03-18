@@ -14,6 +14,8 @@ export class ListArtistsComponent {
   selectedGenre: Genre = new Genre();
   newGenre: Genre = new Genre();
   addGenreToggle: boolean = false;
+  editGenreToggle: boolean = false;
+  editIndex: number = -1;
 
   artists: Artist[] = [];
   genres: Genre[] = [];
@@ -37,11 +39,40 @@ export class ListArtistsComponent {
     this.addGenreToggle = !this.addGenreToggle;
   }
 
+  toggleEditGenre(index: number) {
+    this.editIndex = index;
+    this.editGenreToggle = !this.editGenreToggle;
+  }
+
   addGenre() {
-    // Implement logic to add selected genre to the artist
+    this.selectedArtist.genres?.push(this.newGenre);
+    this.saveArtist();
+  }
+
+  removeGenre(index: number){
+    this.selectedArtist.genres?.splice(index, 1);
+    this.saveArtist();
+    this.resetEdit();
+  }
+
+  saveArtist(){
+    this.resetEdit();
+    this.http.updateArtist(this.selectedArtist).subscribe(artist => {
+      this.selectedArtist = artist;
+    })
+  }
+
+  filterGenres(): Genre[] {
+    if (!this.selectedArtist || !this.selectedArtist.genres) {
+      return this.genres;
+    }
+    return this.genres.filter(genre => !this.selectedArtist.genres!.some(g => g.id === genre.id));
   }
 
   resetEdit() {
+    this.editIndex = -1;
+    this.editGenreToggle = false;
     this.addGenreToggle = false;
+    this.newGenre = new Genre();
   }
 }

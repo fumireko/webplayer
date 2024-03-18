@@ -45,36 +45,56 @@
   </div>
 
   <div class="col-6" *ngIf="selectedArtist.id">
-    <form #artistForm="ngForm">
-      <p class="text-center font-weight-bold">{{ selectedArtist.name }} Genres</p>
-      <table class="table table-sm">
-        <thead>
-          <th>ID</th>
-          <th>Description</th>
-          <th>
-            <button (click)="toggleAddGenre()" class="btn btn-sm btn-success">Add</button>
-          </th>          
-        </thead>
-        <tbody>
-          <tr *ngFor="let genre of selectedArtist.genres">
+    <p class="text-center font-weight-bold">{{ selectedArtist.name }} genres</p>
+    <table class="table table-sm">
+      <thead>
+        <th>ID</th>
+        <th>Description</th>
+        <th>
+          <button (click)="toggleAddGenre()" class="btn btn-sm btn-success">Add</button>
+        </th>
+      </thead>
+      <tbody>
+        <tr *ngIf="addGenreToggle">
+          <td colspan="2">
+            <select class="form-control" name="newGenre" [(ngModel)]="newGenre">
+              <option *ngFor="let genre of filterGenres()" [ngValue]="genre">{{ genre.description }}</option>
+            </select>                     
+          </td>
+          <td class="btn-group">
+            <button class="btn btn-sm btn-success" (click)="addGenre()">Add</button>
+            <button class="btn btn-sm btn-secondary" (click)="resetEdit()">Cancel</button>
+          </td>
+        </tr>
+        <tr *ngFor="let genre of selectedArtist.genres; let i = index">
+          <ng-container *ngIf="editIndex !== i">
             <td>{{ genre.id }}</td>
             <td>{{ genre.description }}</td>
-          </tr>
-          <tr *ngIf="addGenreToggle">
+          </ng-container>
+          <ng-container *ngIf="editIndex === i">
             <td colspan="2">
-              <select class="form-control" name="newGenre" [(ngModel)]="newGenre">
-                <option *ngFor="let genre of genres" [ngValue]="genre">{{ genre.description }}</option>
+              <select class="form-control" name="newGenre" [(ngModel)]="selectedArtist.genres![i]">
+                <option [ngValue]="selectedArtist.genres![i]" selected> {{ selectedArtist.genres![i].description }} </option>
+                <ng-container *ngFor="let genre of genres"><ng-container *ngIf="genre.id !== selectedArtist.genres![i].id">
+                    <option [ngValue]="genre">{{ genre.description }}</option>
+                </ng-container></ng-container>
               </select>
             </td>
-            <td class="btn-group">
-              <button class="btn btn-sm btn-success" (click)="addGenre()">Add</button>
+          </ng-container>
+          <td class="btn-group">
+            <ng-container *ngIf="editIndex === i">
+              <button class="btn btn-sm btn-success" (click)="saveArtist()">Save</button>
               <button class="btn btn-sm btn-secondary" (click)="resetEdit()">Cancel</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </form>
-
+            </ng-container>
+            <ng-container *ngIf="editIndex !== i">
+              <button class="btn btn-sm btn-primary" (click)="toggleEditGenre(i)">Edit</button>
+              <button class="btn btn-sm btn-danger" (click)="removeGenre(i)">Remove</button>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
     <hr>
 
     <p class="text-center font-weight-bold">{{ selectedArtist.name }} Albums</p>

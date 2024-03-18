@@ -154,14 +154,14 @@
   <hr>
 
   <p class="text-center font-weight-bold">Album songs</p>
-  <table class="table table-sm">
+  <table class="table table-hover table-sm">
     <thead>
         <th>ID</th>
         <th>Title</th>
         <th>Length</th>
     </thead>
     <tbody>
-        <tr *ngFor="let song of getSongsByAlbum(selectedSongAlbum)">
+        <tr *ngFor="let song of getSongsByAlbum(selectedSongAlbum)" [routerLink]="['/admin/songs', song.id]">
             <td>{{ song.id }}</td>
             <td>{{ song.title }}</td>
             <td>{{ song.length | minutes }}</td>

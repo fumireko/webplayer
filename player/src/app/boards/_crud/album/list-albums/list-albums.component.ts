@@ -16,6 +16,7 @@ export class ListAlbumsComponent {
   selectedAlbum: Album = new Album();
   editIndex: number = -1;
   newArtist: Artist = new Artist();
+
   albums: Album[] = [];
   artists: Artist[] = [];
 
@@ -79,6 +80,10 @@ export class ListAlbumsComponent {
     this.editArtist = false;
     this.addArtistToggle = false;
     this.newArtist = new Artist();
+  }
+
+  compare(i: number, j: number){
+    console.log(i !== j);
   }
 
   filterArtists(): Artist[] {
