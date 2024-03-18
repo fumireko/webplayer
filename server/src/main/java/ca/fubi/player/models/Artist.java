@@ -30,7 +30,7 @@ public class Artist {
     private EnumCountry countryCode;
 
     @ManyToMany(mappedBy = "artists")
-    @JsonIgnoreProperties("artists")
+    @JsonIgnoreProperties("album") 
     private Set<Album> albums = new HashSet<>();
 
     @ManyToMany
