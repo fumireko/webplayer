@@ -72,12 +72,12 @@
       <div class="text-center">
         <div class="btn-group">
           <button 
-          class="btn btn-sm btn-primary mx-auto"
-          [ngClass]="{'btn-success': editAlbum}"
-          (click)="saveAlbum()">
-          <span *ngIf="editAlbum">Save</span>
-          <span *ngIf="!editAlbum">Edit album details</span>
-          </button>
+            class="btn btn-sm btn-primary mx-auto"
+            [ngClass]="{'btn-success': editAlbum}"
+            (click)="editAlbum ? saveAlbum() : toggleEditAlbum()">
+            <span *ngIf="editAlbum">Save</span>
+            <span *ngIf="!editAlbum">Edit album details</span>
+          </button>        
 
           <button *ngIf="editAlbum" 
           class="btn btn-sm btn-secondary mx-auto" 

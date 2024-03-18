@@ -22,63 +22,75 @@
   </li>
 </ul>
 
-<table class="table table-hover">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Country Code</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let artist of artists" (click)="showDetails(artist)">
-        <td>{{ artist.id }}</td>
-        <td>{{ artist.name }}</td>
-        <td>{{ artist.description }}</td>
-        <td>{{ artist.countryCode }}</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <div *ngIf="selectedArtist" class="my-3">
-    <hr>
-    <p class="text-center font-weight-bold">Artist details</p>
+<div class="row">
+  <div class="col-6" [ngClass]="{'col-12': !selectedArtist.id}">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Country Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let artist of artists" (click)="showDetails(artist)">
+          <td>{{ artist.id }}</td>
+          <td>{{ artist.name }}</td>
+          <td>{{ artist.description }}</td>
+          <td>{{ artist.countryCode }}</td>
+        </tr>
+      </tbody>
+    </table>  
   </div>
 
-  <div *ngIf="selectedArtist" class="row">
-    <div class="col-6">
-        <p class="fs-5">{{ selectedArtist.name }} Albums</p>
-        <table class="table table-sm">
+  <div class="col-6" *ngIf="selectedArtist.id">
+    <form #artistForm="ngForm">
+      <p class="text-center font-weight-bold">{{ selectedArtist.name }} Genres</p>
+      <table class="table table-sm">
         <thead>
-            <th>Title</th>
-            <th>Release Date</th>
-            <th>Cover</th>
+          <th>ID</th>
+          <th>Description</th>
+          <th>
+            <button (click)="toggleAddGenre()" class="btn btn-sm btn-success">Add</button>
+          </th>          
         </thead>
         <tbody>
-            <tr *ngFor="let album of selectedArtist.albums">
-            <td>{{ album.title }}</td>
-            <td>{{ album.releaseDate }}</td>
-            <td>{{ album.imageUrl }}</td>
-            </tr>
+          <tr *ngFor="let genre of selectedArtist.genres">
+            <td>{{ genre.id }}</td>
+            <td>{{ genre.description }}</td>
+          </tr>
+          <tr *ngIf="addGenreToggle">
+            <td colspan="2">
+              <select class="form-control" name="newGenre" [(ngModel)]="newGenre">
+                <option *ngFor="let genre of genres" [ngValue]="genre">{{ genre.description }}</option>
+              </select>
+            </td>
+            <td class="btn-group">
+              <button class="btn btn-sm btn-success" (click)="addGenre()">Add</button>
+              <button class="btn btn-sm btn-secondary" (click)="resetEdit()">Cancel</button>
+            </td>
+          </tr>
         </tbody>
-        </table>    
-    </div>
+      </table>
+    </form>
 
-    <div class="col-6">
-        <p class="fs-5">{{ selectedArtist.name }} Genres</p>
-        <table class="table table-sm">
-          <thead>
-            <th>ID</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr *ngFor="let genre of selectedArtist.genres">
-              <td>{{ genre.id }}</td>
-              <td>{{ genre.description }}</td>
-            </tr>
-          </tbody>
-        </table>
-    </div>
-  </div>
-  
+    <hr>
+
+    <p class="text-center font-weight-bold">{{ selectedArtist.name }} Albums</p>
+    <table class="table table-sm">
+      <thead>
+          <th>Title</th>
+          <th>Release Date</th>
+          <th>Cover</th>
+      </thead>
+      <tbody>
+          <tr *ngFor="let album of selectedArtist.albums">
+          <td>{{ album.title }}</td>
+          <td>{{ album.releaseDate }}</td>
+          <td><img src="{{ album.imageUrl }}" alt="{{ album.title }}" class="img-fluid"></td>
+          </tr>
+      </tbody>
+    </table>    
+  </div>  
+</div>
