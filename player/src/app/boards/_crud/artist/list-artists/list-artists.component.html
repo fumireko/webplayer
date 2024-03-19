@@ -34,7 +34,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let artist of artists" (click)="showDetails(artist)">
+        <tr *ngFor="let artist of artists" (click)="showDetails(artist)" [ngClass]="{'table-primary': selectedArtist.id == artist.id}">
           <td>{{ artist.id }}</td>
           <td>{{ artist.name }}</td>
           <td>{{ artist.description }}</td>

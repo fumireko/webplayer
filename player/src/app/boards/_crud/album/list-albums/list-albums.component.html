@@ -34,7 +34,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let album of albums" (click)="showDetails(album)">
+        <tr *ngFor="let album of albums" (click)="showDetails(album)" [ngClass]="{'table-primary': selectedAlbum.id == album.id}">
           <td>{{ album.id }}</td>
           <td>{{ album.title }}</td>
           <td>{{ album.imageUrl }}</td>
