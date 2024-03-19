@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import ca.fubi.player.song.Song;
+import ca.fubi.player.song.SongRepository;
+
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/files")
@@ -26,13 +29,19 @@ public class FilesController {
 	@Autowired
 	FilesStorageService storageService;
 	
+	@Autowired
+	SongRepository songRepository;
+	
 	@PostMapping("/upload/{id}")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long id){
 		try {
-			storageService.save(file);
+			String path = storageService.save(file);
+			Song song = songRepository.findById(id).get();
+			song.setFile(new FileInfo(file.getOriginalFilename(), path));
+			songRepository.save(song);
 			return ResponseEntity.ok().body("Upload success: " + file.getOriginalFilename());
 		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("Could not upload file " + file.getName() + ", " + e.getMessage());
+			return ResponseEntity.internalServerError().body("Could not upload file " + file.getOriginalFilename() + ", " + e.getMessage());
 		}
 	}
 	

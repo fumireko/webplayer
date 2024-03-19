@@ -26,13 +26,13 @@ public class FilesStorageServiceImpl implements FilesStorageService{
 		}
 	}
 
-	@Override
-	public void save(MultipartFile file) {
+	public String save(MultipartFile file) {
 		try { Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename())); }
 		catch (Exception e) {
 			if (e instanceof FileAlreadyExistsException) throw new RuntimeException("File already exists.");
 			throw new RuntimeException(e.getMessage());
 		}
+		return this.root.resolve(file.getOriginalFilename()).toString();
 	}
 
 	@Override

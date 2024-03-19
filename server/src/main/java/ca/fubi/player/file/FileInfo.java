@@ -25,11 +25,19 @@ public class FileInfo {
 	@Column(name = "url")
 	private String url;
 	
+	public FileInfo() {}
+	
 	public FileInfo(String name, String url) {
 		this.setName(name);
 		this.setUrl(url);
 	}
 	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}
