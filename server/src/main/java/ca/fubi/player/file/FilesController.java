@@ -1,5 +1,7 @@
 package ca.fubi.player.file;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import ca.fubi.player.song.Song;
 import ca.fubi.player.song.SongRepository;
@@ -45,12 +48,9 @@ public class FilesController {
 		}
 	}
 	
-	@GetMapping("/")
-	public ResponseEntity<List<FileInfo>> getAllFiles(){
-		List<FileInfo> f = storageService.loadAll().map(path -> {
-			return new FileInfo(path.getFileName().toString(), MvcUriComponentsBuilder.fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString());
-		}).collect(Collectors.toList());
-		return ResponseEntity.ok().body(f);
+	//Why
+	@GetMapping("/") public ResponseEntity<List<FileInfo>> getAllFiles(){
+		return ResponseEntity.ok().body(storageService.loadAll().map(p -> new FileInfo(p.getFileName().toString(), MvcUriComponentsBuilder.fromMethodName(FilesController.class, "getFile", UriComponentsBuilder.fromUriString(p.getFileName().toString()).build().encode().toUriString()).build().toString())).collect(Collectors.toList())); 
 	}
 	
 	@GetMapping("/{filename:.+}")
