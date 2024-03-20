@@ -2,3 +2,7 @@
 .table {
     background-color: white !important;
 }
+
+.img-fluid {
+    max-width: 12rem !important;
+}
