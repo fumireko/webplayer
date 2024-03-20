@@ -7,6 +7,7 @@ import { Album } from '../shared/models/album.model';
 import { Genre } from '../shared/models/genre.model';
 import { Playlist } from '../shared/models/playlist.model';
 import { Song } from '../shared/models/song.model';
+import { File } from '../shared/models/file.model';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,10 @@ export class ApiService {
     return this.http.get<Song[]>(AppComponent.PUBLIC_BACKEND_URL + '/api/songs/', { withCredentials: false });
   }
 
+  getFiles(): Observable<File[]> {
+    return this.http.get<File[]>(AppComponent.PUBLIC_BACKEND_URL + '/files/', { withCredentials: false });
+  }
+
   updateSong(s: Song): Observable<Song> {
     return this.http.put<Song>(`${AppComponent.PUBLIC_BACKEND_URL}/api/songs/${s.id}`, s, { withCredentials: false });
   }
@@ -45,5 +50,13 @@ export class ApiService {
 
   updateArtist(a: Artist): Observable<Artist> {
     return this.http.put<Artist>(`${AppComponent.PUBLIC_BACKEND_URL}/api/artists/${a.id}`, a, { withCredentials: false});
+  }
+
+  saveAlbum(a: Album): Observable<Album> {
+    return this.http.post<Album>(`${AppComponent.PUBLIC_BACKEND_URL}/api/albums/`, a, { withCredentials: false});
+  }
+
+  saveArtist(a: Artist): Observable<Artist> {
+    return this.http.post<Artist>(`${AppComponent.PUBLIC_BACKEND_URL}/api/artists/`, a, { withCredentials: false});
   }
 }

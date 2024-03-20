@@ -6,7 +6,7 @@ export class Artist {
         public id?: number,
         public name?: string,
         public description?: string,
-        public countryCode?: any,
+        public countryCode?: string,
         public albums?: Album[],
         public genres?: Genre[]
     ){}
