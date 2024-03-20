@@ -1,13 +1,19 @@
 package ca.fubi.player.file;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import ca.fubi.player.song.Song;
 import ca.fubi.player.song.SongRepository;
+import jakarta.servlet.ServletContext;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
@@ -34,7 +41,7 @@ public class FilesController {
 	
 	@Autowired
 	SongRepository songRepository;
-	
+		
 	@PostMapping("/upload/{id}")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long id){
 		try {
@@ -53,10 +60,36 @@ public class FilesController {
 		return ResponseEntity.ok().body(storageService.loadAll().map(p -> new FileInfo(p.getFileName().toString(), MvcUriComponentsBuilder.fromMethodName(FilesController.class, "getFile", UriComponentsBuilder.fromUriString(p.getFileName().toString()).build().encode().toUriString()).build().toString())).collect(Collectors.toList())); 
 	}
 	
-	@GetMapping("/{filename:.+}")
-	@ResponseBody
-	public ResponseEntity<Resource> getFile(@PathVariable String filename){
-		Resource file = storageService.load(filename);
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-	}
+    @GetMapping("/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        Resource file = storageService.load(filename);
+
+        // Determine the MIME type based on the file extension
+        String contentType = determineContentType(filename);
+
+        // Set Content-Disposition header
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"");
+
+        // Set Content-Type header
+        headers.setContentType(MediaType.parseMediaType(contentType));
+
+        return ResponseEntity.ok().headers(headers).body(file);
+    }
+
+    private String determineContentType(String filename) {
+        Path path = Paths.get(filename);
+        try {
+            String contentType = Files.probeContentType(path);
+            if (contentType == null) {
+                // If probeContentType returns null, fallback to a default content type
+                return "application/octet-stream";
+            }
+            return contentType;
+        } catch (IOException e) {
+            // If an exception occurs, fallback to a default content type
+            return "application/octet-stream";
+        }
+    }
 }
