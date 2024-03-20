@@ -22,8 +22,18 @@
   </li>
 </ul>
 
+<div class="d-flex justify-content-between">
+  <h2>Songs listing</h2>
+  <button class="btn btn-sm m-2 btn-secondary" (click)="toggleNewSong()" [ngClass]="{'btn-success': !newSongToggle}">
+    <span *ngIf="newSongToggle">Cancel</span>
+    <span *ngIf="!newSongToggle">New song</span>
+  </button>  
+</div>
+
+<hr>
+
 <div class="row">
-<div class="col-6" [ngClass]="{'col-12': !selectedSong.id}">
+<div class="col-6" [ngClass]="{'col-12': !selectedSong.id}" *ngIf="!newSongToggle">
   <table class="table table-hover">
     <thead>
       <tr>
@@ -49,7 +59,7 @@
   </table>
 </div>
 
-<div class="col-6" *ngIf="selectedSong.id">
+<div class="col-6" *ngIf="selectedSong.id && !newSongToggle">
   <form #songForm="ngForm"> 
     <p class="text-center font-weight-bold">Song details</p>
     <ul>
@@ -82,9 +92,11 @@
           </select>
       </ng-template>      
       </li>
-      <li><b>File:</b> 
+      <li><b>File:</b><br> 
         <span *ngIf="!editSong; else fileInput">
-          <audio src="{{ selectedSong.file! }}"></audio>
+          <audio controls>
+            <source src="{{ selectedSong.file!.url }}" type="audio/mp3">
+          </audio>
         </span>
         <ng-template #fileInput>
           <select class="form-control" name="file" [(ngModel)]="selectedSong.file" name="length">
@@ -181,5 +193,46 @@
         </tr>
     </tbody>
   </table>    
+</div>
+
+<div class="col-12" *ngIf="newSongToggle">
+  <p class="text-center font-weight-bold">Song details</p>
+    <ul>
+      <li><b>Title:</b>
+        <input class="form-control" type="text" [(ngModel)]="newSong.title" name="title">
+      </li>
+      <li><b>Album:</b>
+        <select class="form-control" name="album" [(ngModel)]="newSong.album">
+          <ng-container *ngFor="let album of albums">
+            <option [ngValue]="album">
+              {{ album.title }} by {{ getArtistsNames(album) }}
+            </option>
+          </ng-container>
+        </select>
+      </li>
+      <li><b>File:</b> 
+        <select class="form-control" name="file" [(ngModel)]="newSong.file" name="length">
+          <ng-container *ngFor="let file of files">
+              <option [ngValue]="file">
+                {{ file.url }}
+              </option>
+          </ng-container>
+        </select>
+      </li>
+    </ul>
+    <div class="text-center">
+      <div class="btn-group">
+        <button *ngIf="newSongToggle" 
+          class="btn btn-sm btn-success mx-auto" 
+          (click)="saveNewSong()">
+          Save
+        </button>
+        <button *ngIf="newSongToggle" 
+          class="btn btn-sm btn-secondary mx-auto" 
+          (click)="toggleNewSong()">
+          Cancel
+        </button>
+      </div>
+    </div>      
 </div>
 </div>

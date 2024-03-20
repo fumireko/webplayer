@@ -4,6 +4,7 @@ import { Song } from '../../../../shared/models/song.model';
 import { Album } from '../../../../shared/models/album.model';
 import { BehaviorSubject, Observable, combineLatest, map, of } from 'rxjs';
 import { File } from '../../../../shared/models/file.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-list-songs',
@@ -14,9 +15,11 @@ export class ListSongsComponent {
 
   editSong: boolean = false;
   editAlbum: boolean = false;
+  newSong: Song = new Song();
   selectedSong: Song = new Song();
   selectedSongAlbum: Album = new Album();
   selectedSongReset: string = "";
+  newSongToggle: boolean = false;
 
   songs$: Observable<Song[]> | null = null;
 
@@ -28,7 +31,8 @@ export class ListSongsComponent {
 
   sortedColumn$ = new BehaviorSubject<string>('');
 
-  constructor(private http: ApiService){}
+  constructor(private http: ApiService,
+              private route: ActivatedRoute){}
 
 ngOnInit() {
   this.http.getFiles().subscribe((data: File[]) => {
@@ -41,6 +45,14 @@ ngOnInit() {
   this.http.getSongs().subscribe((data: Song[]) => {
     this.resetSongs = JSON.stringify(data);
     this.songs = data;
+
+    this.route.paramMap.subscribe(params => {
+      const s = this.songs.find(s => s.id == parseInt(params.get('id')!))
+      if (s) {
+        this.selectedSong = s;
+        this.showDetails(s);
+      }
+    })  
   
     this.songs$ = combineLatest(
       this.sortedColumn$,
@@ -132,10 +144,23 @@ ngOnInit() {
     return sortedArray;
   }  
 
+  toggleNewSong(){
+    this.newSongToggle = !this.newSongToggle;
+  }
+
+  saveNewSong(){
+    this.http.saveSong(this.newSong).subscribe(e => {
+      this.songs.push(e);
+      this.resetListing();
+      this.newSongToggle = false;
+    })
+  }
+
   resetListing(){
     this.songs = JSON.parse(this.resetSongs);
     this.albums = JSON.parse(this.resetSongs);
-    this.selectedSong = JSON.parse(this.selectedSongReset);
+    if(this.selectedSongReset) this.selectedSong = JSON.parse(this.selectedSongReset);
     this.selectedSongAlbum = this.selectedSong.album!;
+    this.newSongToggle = false;
   }
 }

@@ -30,6 +30,8 @@
   </button>  
 </div>
 
+<hr>
+
 <div class="row">
   <div class="col-6" [ngClass]="{'col-12': !selectedArtist.id}" *ngIf="!newArtistToggle">
     <table class="table table-hover">
@@ -68,7 +70,7 @@
         </ng-template>
       </li>
       <li>
-        <b>Country:</b><br>
+        <b>Country:</b>
         <ng-container *ngIf="!editArtist; else artistCountryInput">
           {{ regionNames.of(selectedArtist.countryCode!) }}
         </ng-container>

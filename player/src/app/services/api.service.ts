@@ -59,4 +59,9 @@ export class ApiService {
   saveArtist(a: Artist): Observable<Artist> {
     return this.http.post<Artist>(`${AppComponent.PUBLIC_BACKEND_URL}/api/artists/`, a, { withCredentials: false});
   }
+
+  saveSong(song: Song): Observable<Song> {
+    return this.http.post<Song>(`${AppComponent.PUBLIC_BACKEND_URL}/api/songs/`, song, { withCredentials: false });
+  }
+  
 }

@@ -20,6 +20,7 @@ import { ListGenresComponent } from './boards/_crud/genre/list-genres/list-genre
 import { ListPlaylistsComponent } from './boards/_crud/playlist/list-playlists/list-playlists.component';
 import { ListSongsComponent } from './boards/_crud/song/list-songs/list-songs.component';
 import { MinutesPipe } from './shared/pipes/minutes.pipe';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import { MinutesPipe } from './shared/pipes/minutes.pipe';
     FormsModule,
     HttpClientModule
   ],
-  providers: [httpInterceptorProviders],
+  providers: [httpInterceptorProviders, provideAnimationsAsync()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
