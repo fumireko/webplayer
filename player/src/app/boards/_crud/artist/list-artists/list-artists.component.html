@@ -22,8 +22,16 @@
   </li>
 </ul>
 
+<div class="d-flex justify-content-between">
+  <h2>Artists listing</h2>
+  <button class="btn btn-sm m-2 btn-secondary" (click)="toggleNewArtist()" [ngClass]="{'btn-success': !newArtistToggle}">
+    <span *ngIf="newArtistToggle">Cancel</span>
+    <span *ngIf="!newArtistToggle">New artist</span>
+  </button>  
+</div>
+
 <div class="row">
-  <div class="col-6" [ngClass]="{'col-12': !selectedArtist.id}">
+  <div class="col-6" [ngClass]="{'col-12': !selectedArtist.id}" *ngIf="!newArtistToggle">
     <table class="table table-hover">
       <thead>
         <tr>
@@ -44,7 +52,53 @@
     </table>  
   </div>
 
-  <div class="col-6" *ngIf="selectedArtist.id">
+  <div class="col-6" *ngIf="selectedArtist.id && !newArtistToggle">
+    <p class="text-center font-weight-bold">Artist details</p>
+    <ul>
+      <li><b>Name:</b>
+        <span *ngIf="!editArtist; else artistNameInput"> {{ selectedArtist.name }}</span>
+        <ng-template #artistNameInput>
+        <input class="form-control" type="text" [(ngModel)]="selectedArtist.name" name="artistName">
+        </ng-template>
+      </li>
+      <li><b>Description:</b>
+        <span *ngIf="!editArtist; else artistDescInput"> {{ selectedArtist.description }}</span>
+        <ng-template #artistDescInput>
+        <input class="form-control" type="text" [(ngModel)]="selectedArtist.description">
+        </ng-template>
+      </li>
+      <li>
+        <b>Country:</b><br>
+        <ng-container *ngIf="!editArtist; else artistCountryInput">
+          {{ regionNames.of(selectedArtist.countryCode!) }}
+        </ng-container>
+        <ng-template #artistCountryInput>
+          <input class="form-control" type="text" [(ngModel)]="selectedArtist.countryCode" name="artistCountry">
+        </ng-template>
+      </li>
+      
+    </ul>
+
+    <div class="text-center">
+      <div class="btn-group">
+        <button 
+          class="btn btn-sm btn-primary mx-auto"
+          [ngClass]="{'btn-success': editArtist}"
+          (click)="editArtist ? saveArtist() : toggleEditArtist()">
+          <span *ngIf="editArtist">Save</span>
+          <span *ngIf="!editArtist">Edit artist details</span>
+        </button>        
+
+        <button *ngIf="editArtist" 
+        class="btn btn-sm btn-secondary mx-auto" 
+        (click)="resetEdit()">
+        Cancel
+        </button>
+      </div>  
+    </div>      
+
+    <hr>
+
     <p class="text-center font-weight-bold">{{ selectedArtist.name }} genres</p>
     <table class="table table-sm">
       <thead>
@@ -112,5 +166,36 @@
           </tr>
       </tbody>
     </table>    
-  </div>  
+  </div>
+  
+  <div class="col-12" *ngIf="newArtistToggle">
+    <p class="text-center font-weight-bold">Artist details</p>
+    <ul>
+      <li><b>Name:</b>
+        <input class="form-control" type="text" [(ngModel)]="newArtist.name" name="artistName">
+      </li>
+      <li><b>Description:</b>
+        <input class="form-control" type="text" [(ngModel)]="newArtist.description">
+      </li>
+      <li><b>Country:</b><br>
+        <input class="form-control" type="text" [(ngModel)]="newArtist.countryCode" name="artistCountry">
+      </li>
+    </ul>
+
+    <div class="text-center">
+      <div class="btn-group">
+        <button 
+          class="btn btn-sm btn-success mx-auto"
+          (click)="saveNewArtist()">
+          Save
+        </button>        
+
+        <button
+          class="btn btn-sm btn-secondary mx-auto" 
+          (click)="resetEdit()">
+          Cancel
+        </button>
+      </div>
+    </div>      
+  </div>
 </div>

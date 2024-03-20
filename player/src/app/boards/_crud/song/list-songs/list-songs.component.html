@@ -82,10 +82,23 @@
           </select>
       </ng-template>      
       </li>
-      <li><b>Length:</b> 
-        <span *ngIf="!editSong; else lengthInput"> {{ selectedSong.length | minutes}}</span>
-        <ng-template #lengthInput>
-          <input class="form-control" type="number" [(ngModel)]="selectedSong.length" name="length">
+      <li><b>File:</b> 
+        <span *ngIf="!editSong; else fileInput">
+          <audio src="{{ selectedSong.file! }}"></audio>
+        </span>
+        <ng-template #fileInput>
+          <select class="form-control" name="file" [(ngModel)]="selectedSong.file" name="length">
+            <option [ngValue]="selectedSong.file" selected>
+              {{ selectedSong.file?.url }}
+            </option>
+            <ng-container *ngFor="let file of files">
+              <ng-container *ngIf="file.name !== selectedSong.file?.name">
+                <option [ngValue]="file">
+                  {{ file.url }}
+                </option>
+              </ng-container>
+            </ng-container>
+          </select>
         </ng-template>
       </li>
     </ul>

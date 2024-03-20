@@ -11,12 +11,14 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ListAlbumsComponent {
 
+  newAlbumToggle: boolean = false;
   addArtistToggle: boolean = false;
   editAlbum: boolean = false;
   editArtist: boolean = false;
   selectedAlbum: Album = new Album();
   editIndex: number = -1;
   newArtist: Artist = new Artist();
+  newAlbum: Album = new Album();
 
   albums: Album[] = [];
   artists: Artist[] = [];
@@ -49,34 +51,55 @@ export class ListAlbumsComponent {
   }
 
   showDetails(album: Album) {
+    console.log('showDetails');
     this.selectedAlbum = album;
   }
 
+  toggleNewAlbum(){
+    console.log('toggleNewAlbum');
+    this.newAlbumToggle = !this.newAlbumToggle;
+  }
+
+  saveNewAlbum() {
+    console.log('saveNewAlbum');
+    console.log(JSON.stringify(this.newAlbum))
+    this.http.saveAlbum(this.newAlbum).subscribe(e => {
+      this.albums.push(e);
+      this.resetEdit();
+    });
+  }
+
   toggleEditAlbum() {
+    console.log('toggleEditAlbum');
     this.editAlbum = !this.editAlbum;
   }
 
   toggleAddArtist(){
+    console.log('toggleAddArtist');
     this.addArtistToggle = !this.addArtistToggle;
   }
 
   toggleEditArtist(index: number) {
+    console.log('toggleEditArtist');
     this.editIndex = index;
     this.editArtist = !this.editArtist;
   }
 
-  addArtist() {
-    this.selectedAlbum.artists?.push(this.newArtist);
+  addArtist(a: Album) {
+    console.log('addArtist');
+    a.artists?.push(this.newArtist);
     this.saveAlbum();
   }
 
   removeArtist(index: number) {
+    console.log('removeArtist');
     this.selectedAlbum.artists?.splice(index, 1);
     this.saveAlbum();
     this.resetEdit();
   }
 
   saveAlbum() {
+    console.log('saveAlbum');
     this.resetEdit();
     this.http.updateAlbum(this.selectedAlbum).subscribe(album => {
       this.selectedAlbum = album;
@@ -84,18 +107,17 @@ export class ListAlbumsComponent {
   }
 
   resetEdit() {
+    console.log('resetEdit');
     this.editIndex = -1;
     this.editAlbum = false;
     this.editArtist = false;
     this.addArtistToggle = false;
+    this.newAlbumToggle = false;
     this.newArtist = new Artist();
   }
 
-  compare(i: number, j: number){
-    console.log(i !== j);
-  }
-
   filterArtists(): Artist[] {
+    console.log('filterArtists');
     if (!this.selectedAlbum || !this.selectedAlbum.artists) {
       return this.artists;
     }

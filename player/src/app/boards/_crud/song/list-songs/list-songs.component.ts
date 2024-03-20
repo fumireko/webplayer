@@ -1,16 +1,16 @@
-import { Component, OnInit, } from '@angular/core';
+import { Component, } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { Song } from '../../../../shared/models/song.model';
 import { Album } from '../../../../shared/models/album.model';
 import { BehaviorSubject, Observable, combineLatest, map, of } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { File } from '../../../../shared/models/file.model';
 
 @Component({
   selector: 'app-list-songs',
   templateUrl: './list-songs.component.html',
   styleUrl: './list-songs.component.css'
 })
-export class ListSongsComponent implements OnInit {
+export class ListSongsComponent {
 
   editSong: boolean = false;
   editAlbum: boolean = false;
@@ -19,6 +19,8 @@ export class ListSongsComponent implements OnInit {
   selectedSongReset: string = "";
 
   songs$: Observable<Song[]> | null = null;
+
+  files: File[] = [];
   songs: Song[] = [];
   albums: Album[] = [];
   resetSongs: string = "";
@@ -26,59 +28,47 @@ export class ListSongsComponent implements OnInit {
 
   sortedColumn$ = new BehaviorSubject<string>('');
 
-  constructor(
-    private http: ApiService,
-    private route: ActivatedRoute // Inject ActivatedRoute
-  ) {}
+  constructor(private http: ApiService){}
 
-  ngOnInit() {
-    this.http.getAlbums().subscribe((data: Album[]) => {
-      this.resetAlbums = JSON.stringify(data);
-      this.albums = data;
+ngOnInit() {
+  this.http.getFiles().subscribe((data: File[]) => {
+    this.files = data;
+  })
+  this.http.getAlbums().subscribe((data: Album[]) => {
+    this.resetAlbums = JSON.stringify(data);
+    this.albums = data;
+  });
+  this.http.getSongs().subscribe((data: Song[]) => {
+    this.resetSongs = JSON.stringify(data);
+    this.songs = data;
+  
+    this.songs$ = combineLatest(
+      this.sortedColumn$,
+      of(this.songs)
+    ).pipe(
+      map(([sortColumn, songs]) => sortColumn ? this.sortByColumn(songs, sortColumn) : songs)
+    );
+
+    this.songs$.subscribe(songs => {
+      console.log(JSON.stringify(songs));
     });
+  });
+}
 
-    this.http.getSongs().subscribe((data: Song[]) => {
-      this.resetSongs = JSON.stringify(data);
-      this.songs = data;
-
-      this.route.paramMap.subscribe(params => {
-          const s = this.songs.find(song => song.id == parseInt(params.get('id')!));
-          if (s) { 
-            this.selectedSong = s;
-            this.showDetails(s); 
-          }
-      });
-
-      this.songs$ = combineLatest(
-        this.sortedColumn$,
-        of(this.songs)
-      ).pipe(
-        map(([sortColumn, songs]) => sortColumn ? this.sortByColumn(songs, sortColumn) : songs)
-      );
-
-      this.songs$.subscribe(songs => {
-        console.log(JSON.stringify(songs));
-      });
-    });
-  }
 
   getSongsByAlbum(album: Album): Song[] {
     return this.songs.filter(song => song.album?.id === album.id);
   }
 
   getArtistsNames(album: Album | undefined): string {
-    if (album && album.artists) {
-      return album.artists.map(artist => artist.name).join(', ');
-    }
+    if(album) if(album.artists) return album.artists?.map(artist => artist.name).join(', ');
     return "";
   }
 
-  showDetails(selectedSong: Song) {
-    this.selectedSong = selectedSong;
-    this.selectedSongReset = JSON.stringify(selectedSong);
-    if (selectedSong.album) {
-      this.selectedSongAlbum = selectedSong.album;
-    }
+  showDetails(_t11: Song){
+    this.selectedSong = _t11;
+    this.selectedSongReset = JSON.stringify(_t11);
+    if( _t11.album) this.selectedSongAlbum = _t11.album;
   }
 
   saveSong(){

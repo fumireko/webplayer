@@ -22,8 +22,18 @@
   </li>
 </ul>
 
+<div class="d-flex justify-content-between">
+  <h2>Albums listing</h2>
+  <button class="btn btn-sm m-2 btn-secondary" (click)="toggleNewAlbum()" [ngClass]="{'btn-success': !newAlbumToggle}">
+    <span *ngIf="newAlbumToggle">Cancel</span>
+    <span *ngIf="!newAlbumToggle">New album</span>
+  </button>  
+</div>
+
+<hr>
+
 <div class="row">
-  <div class="col-6" [ngClass]="{'col-12': !selectedAlbum.id}">
+  <div class="col-6" [ngClass]="{'col-12': !selectedAlbum.id}" *ngIf="!newAlbumToggle">
     <table class="table table-hover">
       <thead>
         <tr>
@@ -37,13 +47,13 @@
         <tr *ngFor="let album of albums" (click)="showDetails(album)" [ngClass]="{'table-primary': selectedAlbum.id == album.id}">
           <td>{{ album.id }}</td>
           <td>{{ album.title }}</td>
-          <td>{{ album.imageUrl }}</td>
+          <td><img src="{{ album.imageUrl }}" alt="{{ album.title }}" class="img-fluid"></td>
           <td>{{ album.releaseDate }}</td>
         </tr>
       </tbody>
     </table>    
   </div>
-  <div class="col-6" *ngIf="selectedAlbum.id">
+  <div class="col-6" *ngIf="selectedAlbum.id && !newAlbumToggle">
     <form #albumForm="ngForm"> 
       <p class="text-center font-weight-bold">Album details</p>
       <ul>
@@ -78,13 +88,13 @@
             <span *ngIf="editAlbum">Save</span>
             <span *ngIf="!editAlbum">Edit album details</span>
           </button>        
-
+  
           <button *ngIf="editAlbum" 
           class="btn btn-sm btn-secondary mx-auto" 
           (click)="resetEdit()">
           Cancel
           </button>
-        </div>
+        </div>  
       </div>      
     </form>
     
@@ -108,7 +118,7 @@
             </select>                     
           </td>
           <td class="btn-group">
-            <button class="btn btn-sm btn-success" (click)="addArtist()">Add</button>
+            <button class="btn btn-sm btn-success" (click)="addArtist(selectedAlbum)">Add</button>
             <button class="btn btn-sm btn-secondary" (click)="resetEdit()">Cancel</button>
           </td>
         </tr>
@@ -159,5 +169,37 @@
           </tr>
       </tbody>
     </table>
+  </div>
+
+<div class="col-12" *ngIf="newAlbumToggle">
+  <p class="text-center font-weight-bold">Album details</p>
+    <ul>
+      <li><b>Title:</b>
+        <input class="form-control" type="text" [(ngModel)]="newAlbum.title" name="albumTitle">
+      </li>
+      <li><b>Release Date:</b>
+        <input class="form-control" type="date" [(ngModel)]="newAlbum.releaseDate" useValueAsDate name="albumReleaseDate">
+      </li>
+      <li><b>Cover:</b><br>
+        <input class="form-control" type="text" [(ngModel)]="newAlbum.imageUrl" name="albumImageUrl">
+        <img class="img-fluid" src="{{ newAlbum.imageUrl }}" alt="{{ newAlbum.title }}">
+      </li>
+    </ul>
+
+    <div class="text-center">
+      <div class="btn-group">
+        <button 
+          class="btn btn-sm btn-success mx-auto"
+          (click)="saveNewAlbum()">
+          Save
+        </button>        
+
+        <button
+          class="btn btn-sm btn-secondary mx-auto" 
+          (click)="resetEdit()">
+          Cancel
+        </button>
+      </div>
+    </div>      
   </div>
 </div>

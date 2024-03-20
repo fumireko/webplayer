@@ -13,13 +13,18 @@ export class ListArtistsComponent {
 
   selectedArtist: Artist = new Artist();
   selectedGenre: Genre = new Genre();
+  newArtist: Artist = new Artist();
   newGenre: Genre = new Genre();
   addGenreToggle: boolean = false;
   editGenreToggle: boolean = false;
   editIndex: number = -1;
+  editArtist: boolean = false;
+  newArtistToggle: boolean = false;
 
   artists: Artist[] = [];
   genres: Genre[] = [];
+
+  regionNames = new Intl.DisplayNames(['en'], {type: 'region'});
 
   constructor(private http: ApiService,
               private route: ActivatedRoute){}
@@ -53,6 +58,10 @@ export class ListArtistsComponent {
     this.editGenreToggle = !this.editGenreToggle;
   }
 
+  toggleNewArtist(){
+    this.newArtistToggle = !this.newArtistToggle;
+  }
+
   addGenre() {
     this.selectedArtist.genres?.push(this.newGenre);
     this.saveArtist();
@@ -64,13 +73,27 @@ export class ListArtistsComponent {
     this.resetEdit();
   }
 
-  saveArtist(){
-    this.resetEdit();
-    this.http.updateArtist(this.selectedArtist).subscribe(artist => {
-      this.selectedArtist = artist;
-    })
+  toggleEditArtist(){
+    this.editArtist = !this.editArtist;
   }
 
+  saveNewArtist() {
+    this.http.saveArtist(this.newArtist).subscribe(e => {
+      this.artists.push(e);
+      this.resetEdit();
+    });
+  }
+
+  saveArtist() {
+    const updatedArtist = { ...this.selectedArtist }; 
+    delete updatedArtist.albums; 
+  
+    this.http.updateArtist(updatedArtist).subscribe(artist => {
+      this.selectedArtist = artist;
+      this.resetEdit();
+    });
+  }  
+  
   filterGenres(): Genre[] {
     if (!this.selectedArtist || !this.selectedArtist.genres) {
       return this.genres;
@@ -82,6 +105,8 @@ export class ListArtistsComponent {
     this.editIndex = -1;
     this.editGenreToggle = false;
     this.addGenreToggle = false;
+    this.editArtist = false;
+    this.newArtistToggle = false;
     this.newGenre = new Genre();
   }
 }
