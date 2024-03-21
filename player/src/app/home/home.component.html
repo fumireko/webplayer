@@ -1,31 +1,111 @@
-<div class="container">
-    <header class="jumbotron">
-      <p>{{ content }}</p>
-    </header>
-    <div class="content">
-      <div class="player-container">
-        <mat-card>
-          <mat-card-title>{{ currentSong.title }}</mat-card-title>
-          <mat-card-subtitle>{{ currentSong.album.title }}</mat-card-subtitle>
-          <mat-card-content>
-            <audio controls [src]="currentSong.file.url"></audio>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-icon-button (click)="previous()">
-              <mat-icon>skip_previous</mat-icon>
-            </button>
-            <button mat-icon-button (click)="play()">
-              <mat-icon>play_arrow</mat-icon>
-            </button>
-            <button mat-icon-button (click)="pause()">
-              <mat-icon>pause</mat-icon>
-            </button>
-            <button mat-icon-button (click)="next()">
-              <mat-icon>skip_next</mat-icon>
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>      
-    </div>
-</div>
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">
+              Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file"></span>
+              Search
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Library</span>
+          <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
+            <span data-feather="plus-circle"></span>
+          </a>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Artists
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Albums
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Songs
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2" *ngIf="!selectedAlbum.id">Home</h1>
+        <a *ngIf="selectedAlbum.id" class="btn btn-sm btn-outline-primary" (click)="this.selectedAlbum = {}"><</a>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            View
+          </button>
+        </div>
+      </div>
+
+      <div class="scrollspy-wrapper" *ngIf="!selectedAlbum.id">
+          <div class="col" *ngFor="let album of albums" (click)="showAlbum(album)">
+            <div class="card mb-3" [ngClass]="{'bg-dark': selectedAlbum.id == album.id}">
+              <img src="{{ album.imageUrl }}" class="card-img-top">
+              <div class="card-footer">
+                <small [ngClass]="{'text-light': selectedAlbum.id == album.id, 'text-muted': selectedAlbum.id != album.id}">{{ album.title }}</small>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div *ngIf="selectedAlbum.id && selectedAlbum.songs?.length! > 0">
+        <div class="album-details d-flex justify-content-center">
+          <img src="{{ selectedAlbum.imageUrl }}" class="img-fluid">
+          <div class="text-container mx-2">
+            <h1 class="font-weight-bold">{{ selectedAlbum.title || "Album" }}</h1>
+            <p class="mt-5 pt-5">by <span *ngFor="let artist of selectedAlbum?.artists; let last = last">
+                {{ artist.name }}{{ !last ? ', ' : '' }}
+            </span></p>
+            <p class="mt-0">released in {{ selectedAlbum.releaseDate }}</p>
+          </div>
+        </div>      
   
+        <div class="table-responsive mt-3">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th></th>
+                <th>#</th>
+                <th>Title</th>
+                <th>Length</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let song of selectedAlbum.songs">
+                <td class="px-0"><button class="btn btn-sm"><i class="fa fa-play"></i></button></td>
+                <td>{{ song.id }}</td>
+                <td>{{ song.title }}</td>
+                <td>{{ song.length | minutes }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="fixed-bottom bg-dark p-2 d-flex justify-content-center">
+  <audio controls [src]="currentSong?.file?.url">
+    Your browser does not support the audio element.
+  </audio>
+</div>

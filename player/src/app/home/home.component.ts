@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { MusicPlayerService } from '../services/music-player.service';
 import { Song } from '../shared/models/song.model';
+import { Album } from '../shared/models/album.model';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-home',
@@ -11,12 +13,21 @@ import { Song } from '../shared/models/song.model';
 export class HomeComponent {
   content?: string;
   currentSong?: Song;
+  albums: Album[] = []
 
-  constructor(private userService: UserService,
+  selectedAlbum: Album = new Album();
+
+  constructor(private http: ApiService,
+              private userService: UserService,
               private musicPlayerService: MusicPlayerService) { }
 
   ngOnInit(): void {
     this.currentSong = this.musicPlayerService.getCurrentSong();
+
+    this.http.getAlbums().subscribe((albums) => {
+      this.albums = albums;
+    })
+
     this.userService.getPublicContent().subscribe({
       next: data => {
         this.content = data;
@@ -29,6 +40,15 @@ export class HomeComponent {
         }
       }
     });
+  }
+
+  showAlbum(a: Album){
+    this.selectedAlbum = a;
+  }
+
+  formatDate(date: Date): string {
+    console.log(date);
+    return date.toString();
   }
 
   play() {

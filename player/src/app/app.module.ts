@@ -44,7 +44,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [httpInterceptorProviders, provideAnimationsAsync()],
   bootstrap: [AppComponent]
