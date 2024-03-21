@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../services/user.service';
+import { MusicPlayerService } from '../services/music-player.service';
+import { Song } from '../shared/models/song.model';
 
 @Component({
   selector: 'app-home',
@@ -8,10 +10,13 @@ import { UserService } from '../services/user.service';
 })
 export class HomeComponent {
   content?: string;
+  currentSong?: Song;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,
+              private musicPlayerService: MusicPlayerService) { }
 
   ngOnInit(): void {
+    this.currentSong = this.musicPlayerService.getCurrentSong();
     this.userService.getPublicContent().subscribe({
       next: data => {
         this.content = data;
@@ -24,5 +29,23 @@ export class HomeComponent {
         }
       }
     });
+  }
+
+  play() {
+    this.musicPlayerService.play();
+  }
+
+  pause() {
+    this.musicPlayerService.pause();
+  }
+
+  next() {
+    this.musicPlayerService.next();
+    this.currentSong = this.musicPlayerService.getCurrentSong();
+  }
+
+  previous() {
+    this.musicPlayerService.previous();
+    this.currentSong = this.musicPlayerService.getCurrentSong();
   }
 }

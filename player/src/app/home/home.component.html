@@ -2,5 +2,30 @@
     <header class="jumbotron">
       <p>{{ content }}</p>
     </header>
+    <div class="content">
+      <div class="player-container">
+        <mat-card>
+          <mat-card-title>{{ currentSong.title }}</mat-card-title>
+          <mat-card-subtitle>{{ currentSong.album.title }}</mat-card-subtitle>
+          <mat-card-content>
+            <audio controls [src]="currentSong.file.url"></audio>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-icon-button (click)="previous()">
+              <mat-icon>skip_previous</mat-icon>
+            </button>
+            <button mat-icon-button (click)="play()">
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+            <button mat-icon-button (click)="pause()">
+              <mat-icon>pause</mat-icon>
+            </button>
+            <button mat-icon-button (click)="next()">
+              <mat-icon>skip_next</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>      
+    </div>
 </div>
   
