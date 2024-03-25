@@ -91,7 +91,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let song of selectedAlbum.songs">
-                <td class="px-0"><button class="btn btn-sm"><i class="fa fa-play"></i></button></td>
+                <td class="px-0"><button class="btn btn-sm" (click)="setSong(song)"><i class="fa fa-play"></i></button></td>
                 <td>{{ song.id }}</td>
                 <td>{{ song.title }}</td>
                 <td>{{ song.length | minutes }}</td>
@@ -104,8 +104,30 @@
   </div>
 </div>
 
-<div class="fixed-bottom bg-dark p-2 d-flex justify-content-center">
-  <audio controls [src]="currentSong?.file?.url">
-    Your browser does not support the audio element.
-  </audio>
+<div class="fixed-bottom bg-dark p-2 audio-player">
+  <div class="audio-info">
+    <img src="{{ currentSong?.album?.imageUrl }}" class="audio-img">
+    <div class="audio-song">
+      <h3>{{ currentSong?.title }}</h3>
+      <p>{{ currentSong?.album!.artists![0].name }}</p>
+    </div>
+  </div>
+  <div class="audio-controls">
+    <div class="btn-group">
+      <button (click)="previous()"><i class="fa fa-step-backward"></i></button>
+      <button (click)="playPause()">
+        <i class="fa" [ngClass]="{ 'fa-pause': isPlaying, 'fa-play': !isPlaying }"></i>
+      </button>
+      <button (click)="next()"><i class="fa fa-step-forward"></i></button>  
+    </div>
+    
+    <input type="range" class="audio-slider" [(ngModel)]="currentTime" min="0" [max]="getTotalTime()" (input)="seekTo($event)">
+    <div class="audio-time">
+      <span>{{ getCurrentTime() | minutes }}</span>
+      <span>{{ getTotalTime() | minutes }}</span>
+    </div>
+  </div>
+  <div class="audio-right">
+    <button class="btn btn-danger">Placeholder</button>
+  </div>  
 </div>
