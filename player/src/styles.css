@@ -6,3 +6,7 @@
 .img-fluid {
     max-width: 12rem !important;
 }
+
+.navbar {
+    z-index: 100;
+}
