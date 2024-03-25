@@ -16,8 +16,6 @@ export class MusicPlayerService {
   }
 
   play() {
-    this.audio.src = this.getCurrentSong().file?.url!;
-    this.audio.load();
     this.audio.play();
   }
 
@@ -35,7 +33,31 @@ export class MusicPlayerService {
     this.play();
   }
 
+  setCurrentSong(song: Song) {
+    const index = this.queue.findIndex(item => item === song);
+    if (index !== -1) {
+      this.currentSongIndex = index;
+      this.audio.src = song.file?.url!;
+      this.audio.load();
+      this.play();
+    }
+  }
+
   getCurrentSong(): Song {
     return this.queue[this.currentSongIndex];
+  }
+
+  seekTo(time: number) {
+    if (this.audio.duration) {
+      this.audio.currentTime = time;
+    }
+  }
+
+  getCurrentTime(): number {
+    return this.audio.currentTime;
+  }
+
+  getTotalDuration(): number {
+    return this.audio.duration;
   }
 }
