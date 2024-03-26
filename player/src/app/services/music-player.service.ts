@@ -60,4 +60,10 @@ export class MusicPlayerService {
   getTotalDuration(): number {
     return this.audio.duration;
   }
+
+  changeVolume(volume: number) {
+    if (volume >= 0 && volume <= 1) {
+      this.audio.volume = volume;
+    }
+  }
 }

@@ -138,4 +138,8 @@ body {
   .audio-right {
     text-align: right;
   }
+
+  .audio-right button {
+    color: #fff;
+  }
   

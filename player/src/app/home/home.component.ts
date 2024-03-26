@@ -19,6 +19,7 @@ export class HomeComponent {
   selectedAlbum: Album = new Album();
   isPlaying: boolean = false;
   currentTime: number = 0;
+  volume: number = 0.50;
 
   private timerSubscription: Subscription | undefined;
   
@@ -108,5 +109,13 @@ export class HomeComponent {
 
   getTotalTime(): number {
     return this.musicPlayerService.getTotalDuration();
+  }
+
+  changeVolume(){
+    this.musicPlayerService.changeVolume(this.volume);
+  }
+
+  addToQueue(s: Song){
+    this.musicPlayerService.addToQueue(s);
   }
 }

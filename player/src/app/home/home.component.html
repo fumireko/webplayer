@@ -87,6 +87,7 @@
                 <th>#</th>
                 <th>Title</th>
                 <th>Length</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -95,6 +96,7 @@
                 <td>{{ song.id }}</td>
                 <td>{{ song.title }}</td>
                 <td>{{ song.length | minutes }}</td>
+                <td><button class="btn btn-sm" (click)="addToQueue(song)"><i class="fa fa-square-plus"></i></button></td>
               </tr>
             </tbody>
           </table>
@@ -128,6 +130,14 @@
     </div>
   </div>
   <div class="audio-right">
-    <button class="btn btn-danger">Placeholder</button>
+    <button class="btn btn-sm"><i class="fa fa-bars"></i></button>
+    <button class="btn btn-sm">
+      <i [ngClass]="{
+        'fa fa-volume-xmark': volume === 0,
+        'fa fa-volume-low': volume > 0 && volume < 0.5,
+        'fa fa-volume-high': volume >= 0.5
+      }"></i>
+    </button>    
+    <input type="range" class="audio-volume" [(ngModel)]="volume" min="0" max="1" step="0.01" (input)="changeVolume()">
   </div>  
 </div>
