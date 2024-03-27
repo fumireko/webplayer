@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Song } from '../../shared/models/song.model';
 import { Album } from '../../shared/models/album.model';
 import { ApiService } from '../../services/api.service';
@@ -9,9 +9,9 @@ import { Subscription, interval } from 'rxjs';
 @Component({
   selector: 'app-player',
   templateUrl: './player.component.html',
-  styleUrl: './player.component.css'
+  styleUrls: ['./player.component.css']
 })
-export class PlayerComponent {
+export class PlayerComponent implements OnDestroy {
   content?: string;
   currentSong?: Song;
   albums: Album[] = [];
@@ -22,13 +22,16 @@ export class PlayerComponent {
   volume: number = 0.50;
 
   private timerSubscription: Subscription | undefined;
-  
+  private songSubscription: Subscription | undefined;
+
   constructor(private http: ApiService,
               private userService: UserService,
               private musicPlayerService: MusicPlayerService) { }
 
   ngOnInit(): void {
-    this.currentSong = this.musicPlayerService.getCurrentSong();
+    this.songSubscription = this.musicPlayerService.getCurrentSongObservable().subscribe(song => {
+      this.currentSong = song;
+    });
 
     this.http.getAlbums().subscribe((albums) => {
       this.albums = albums;
@@ -47,16 +50,18 @@ export class PlayerComponent {
         }
       }
     });
+
     this.timerSubscription = interval(499).subscribe(() => {
       this.getCurrentTime();
-      this.currentSong = this.musicPlayerService.getCurrentSong();
     });
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe from the timerSubscription to prevent memory leaks
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
+    }
+    if (this.songSubscription) {
+      this.songSubscription.unsubscribe();
     }
   }
 
@@ -84,12 +89,10 @@ export class PlayerComponent {
 
   next() {
     this.musicPlayerService.next();
-    this.currentSong = this.musicPlayerService.getCurrentSong();
   }
 
   previous() {
     this.musicPlayerService.previous();
-    this.currentSong = this.musicPlayerService.getCurrentSong();
   }
 
   seekTo(event: Event) {
@@ -100,12 +103,10 @@ export class PlayerComponent {
     this.musicPlayerService.addToQueue(s);
     this.musicPlayerService.setCurrentSong(s);
     this.isPlaying = true;
-    this.currentSong = this.musicPlayerService.getCurrentSong();
-    console.log(this.musicPlayerService.getCurrentSong());
   }
 
-  getCurrentTime(): number {
-    return this.currentTime = this.musicPlayerService.getCurrentTime();
+  getCurrentTime(): void {
+    this.currentTime = this.musicPlayerService.getCurrentTime();
   }
 
   getTotalTime(): number {
