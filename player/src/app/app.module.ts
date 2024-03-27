@@ -21,6 +21,8 @@ import { ListPlaylistsComponent } from './boards/_crud/playlist/list-playlists/l
 import { ListSongsComponent } from './boards/_crud/song/list-songs/list-songs.component';
 import { MinutesPipe } from './shared/pipes/minutes.pipe';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { PlayerComponent } from './home/player/player.component';
+import { NavComponent } from './home/nav/nav.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     ListGenresComponent,
     ListPlaylistsComponent,
     ListSongsComponent,
-    MinutesPipe
+    MinutesPipe,
+    PlayerComponent,
+    NavComponent
   ],
   imports: [
     CommonModule,
