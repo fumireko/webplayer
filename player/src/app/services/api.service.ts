@@ -8,6 +8,7 @@ import { Genre } from '../shared/models/genre.model';
 import { Playlist } from '../shared/models/playlist.model';
 import { Song } from '../shared/models/song.model';
 import { File } from '../shared/models/file.model';
+import { User } from '../shared/models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,12 +33,20 @@ export class ApiService {
     return this.http.get<Playlist[]>(AppComponent.PUBLIC_BACKEND_URL + '/api/playlists/', { withCredentials: false });
   }
 
+  getPlaylistsByUserId(id: number): Observable<Playlist[]> {
+    return this.http.get<Playlist[]>(AppComponent.PUBLIC_BACKEND_URL + '/api/playlists/user/' + id, { withCredentials: false });
+  }
+
   getSongs(): Observable<Song[]> {
     return this.http.get<Song[]>(AppComponent.PUBLIC_BACKEND_URL + '/api/songs/', { withCredentials: false });
   }
 
   getFiles(): Observable<File[]> {
     return this.http.get<File[]>(AppComponent.PUBLIC_BACKEND_URL + '/files/', { withCredentials: false });
+  }
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(AppComponent.PUBLIC_BACKEND_URL + '/api/test/', { withCredentials: false });
   }
 
   updateSong(s: Song): Observable<Song> {
@@ -52,6 +61,14 @@ export class ApiService {
     return this.http.put<Artist>(`${AppComponent.PUBLIC_BACKEND_URL}/api/artists/${a.id}`, a, { withCredentials: false});
   }
 
+  updatePlaylist(p: Playlist): Observable<Playlist> {
+    return this.http.put<Playlist>(`${AppComponent.PUBLIC_BACKEND_URL}/api/playlists/${p.id}`, p, { withCredentials: false});
+  }
+
+  updateGenre(g: Genre): Observable<Genre> {
+    return this.http.put<Genre>(`${AppComponent.PUBLIC_BACKEND_URL}/api/genres/${g.id}`, g, { withCredentials: false});
+  }
+
   saveAlbum(a: Album): Observable<Album> {
     return this.http.post<Album>(`${AppComponent.PUBLIC_BACKEND_URL}/api/albums/`, a, { withCredentials: false});
   }
@@ -64,4 +81,11 @@ export class ApiService {
     return this.http.post<Song>(`${AppComponent.PUBLIC_BACKEND_URL}/api/songs/`, song, { withCredentials: false });
   }
   
+  savePlaylist(p: Playlist): Observable<Playlist> {
+    return this.http.post<Playlist>(`${AppComponent.PUBLIC_BACKEND_URL}/api/playlists/`, p, { withCredentials: false });
+  }
+
+  saveGenre(g: Genre): Observable<Genre> {
+    return this.http.post<Genre>(`${AppComponent.PUBLIC_BACKEND_URL}/api/genres/`, g, { withCredentials: false });
+  }
 }
