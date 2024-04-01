@@ -1,123 +1,73 @@
-import { Component, OnDestroy } from '@angular/core';
-import { Song } from '../../shared/models/song.model';
-import { Album } from '../../shared/models/album.model';
-import { ApiService } from '../../services/api.service';
-import { UserService } from '../../services/user.service';
-import { MusicPlayerService } from '../../services/music-player.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
+import { MusicPlayerService } from '../../services/music-player.service';
+import { Song } from '../../shared/models/song.model';
 
 @Component({
   selector: 'app-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
-export class PlayerComponent implements OnDestroy {
-  content?: string;
-  currentSong?: Song;
-  albums: Album[] = [];
-
-  selectedAlbum: Album = new Album();
-  isPlaying: boolean = false;
+export class PlayerComponent implements OnInit, OnDestroy {
+  currentSong: Song = new Song();
   currentTime: number = 0;
-  volume: number = 0.50;
+  totalDuration: number = 0;
+  volume: number = 0.5;
+  queue: Song[] = [];
+  playing: boolean = false;
 
-  private timerSubscription: Subscription | undefined;
-  private songSubscription: Subscription | undefined;
+  private playerSubscription: Subscription | undefined;
 
-  constructor(private http: ApiService,
-              private userService: UserService,
-              private musicPlayerService: MusicPlayerService) { }
+  constructor(private musicPlayerService: MusicPlayerService) {}
 
   ngOnInit(): void {
-    this.songSubscription = this.musicPlayerService.getCurrentSongObservable().subscribe(song => {
-      this.currentSong = song;
-    });
-
-    this.http.getAlbums().subscribe((albums) => {
-      this.albums = albums;
-    });
-
-    this.userService.getPublicContent().subscribe({
-      next: data => {
-        this.content = data;
-      },
-      error: err => {
-        console.log(err);
-        if (err.error) {
-          this.content = JSON.parse(err.error).message;
-        } else {
-          this.content = "Error with status: " + err.status;
-        }
+    this.musicPlayerService.getCurrentSongObservable().subscribe(song => {
+      if (song) {
+        this.currentSong = song;
+        this.totalDuration = this.musicPlayerService.getTotalDuration();
+        this.queue = this.musicPlayerService.getQueue();
       }
     });
 
-    this.timerSubscription = interval(499).subscribe(() => {
-      this.getCurrentTime();
+    this.playerSubscription = interval(1000).subscribe(() => {
+      this.currentTime = this.musicPlayerService.getCurrentTime();
     });
   }
 
   ngOnDestroy(): void {
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
-    }
-    if (this.songSubscription) {
-      this.songSubscription.unsubscribe();
+    if (this.playerSubscription) {
+      this.playerSubscription.unsubscribe();
     }
   }
 
-  showAlbum(a: Album){
-    this.selectedAlbum = a;
-  }
-
-  playPause() {
-    if (this.isPlaying) {
-      this.pause();
+  playPause(): void {
+    if (this.playing) {
+      this.musicPlayerService.pause();
     } else {
-      this.play();
+      this.musicPlayerService.play();
     }
+    this.playing = !this.playing;
   }
 
-  play() {
-    this.musicPlayerService.play();
-    this.isPlaying = true;
-  }
-
-  pause() {
-    this.musicPlayerService.pause();
-    this.isPlaying = false;
-  }
-
-  next() {
+  next(): void {
     this.musicPlayerService.next();
   }
 
-  previous() {
+  previous(): void {
     this.musicPlayerService.previous();
   }
 
-  seekTo(event: Event) {
-    this.musicPlayerService.seekTo((event.target as HTMLInputElement).valueAsNumber);
+  onSeek(e: Event): void {
+    if (e.target) this.musicPlayerService.seekTo(parseInt((<HTMLInputElement>e.target).value));
   }
 
-  setSong(s: Song){
-    this.musicPlayerService.addToQueue(s);
-    this.musicPlayerService.setCurrentSong(s);
-    this.isPlaying = true;
+  onVolumeChange(e: Event): void {
+    if (e.target) this.musicPlayerService.changeVolume(parseInt((<HTMLInputElement>e.target).value));
   }
-
-  getCurrentTime(): void {
-    this.currentTime = this.musicPlayerService.getCurrentTime();
-  }
-
-  getTotalTime(): number {
-    return this.musicPlayerService.getTotalDuration();
-  }
-
-  changeVolume(){
-    this.musicPlayerService.changeVolume(this.volume);
-  }
-
-  addToQueue(s: Song){
-    this.musicPlayerService.addToQueue(s);
+  
+  formatTime(time: number): string {
+    const minutes: number = Math.floor(time / 60);
+    const seconds: number = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   }
 }

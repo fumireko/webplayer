@@ -4,25 +4,31 @@
 
   <div class="row">
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2" *ngIf="!selectedAlbum.id">Home</h1>
-        <a *ngIf="selectedAlbum.id" class="btn btn-sm btn-outline-primary" (click)="this.selectedAlbum = {}"><</a>
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            View
-          </button>
-        </div>
+        <a *ngIf="selectedAlbum.id" class="btn btn-sm btn-outline-primary" (click)="this.selectedAlbum = {}">
+          << </a>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                View
+              </button>
+            </div>
       </div>
 
+      <h2>Albums</h2>
+
       <div class="scrollspy-wrapper" *ngIf="!selectedAlbum.id">
-          <div class="col" *ngFor="let album of albums" (click)="showAlbum(album)">
-            <div class="card mb-3" [ngClass]="{'bg-dark': selectedAlbum.id == album.id}">
-              <img src="{{ album.imageUrl }}" class="card-img-top">
-              <div class="card-footer">
-                <small [ngClass]="{'text-light': selectedAlbum.id == album.id, 'text-muted': selectedAlbum.id != album.id}">{{ album.title }}</small>
-              </div>
+        <div class="col" *ngFor="let album of albums" (click)="showAlbum(album)">
+          <div class="card mb-3" [ngClass]="{'bg-dark': selectedAlbum.id == album.id}">
+            <img src="{{ album.imageUrl }}" class="card-img-top">
+            <div class="card-footer">
+              <small
+                [ngClass]="{'text-light': selectedAlbum.id == album.id, 'text-muted': selectedAlbum.id != album.id}">{{
+                album.title }}</small>
             </div>
           </div>
+        </div>
       </div>
 
       <div *ngIf="selectedAlbum.id && selectedAlbum.songs?.length! > 0">
@@ -32,11 +38,11 @@
             <h1 class="font-weight-bold">{{ selectedAlbum.title || "Album" }}</h1>
             <p class="mt-5 pt-5">by <span *ngFor="let artist of selectedAlbum?.artists; let last = last">
                 {{ artist.name }}{{ !last ? ', ' : '' }}
-            </span></p>
-            <p class="mt-0">released in {{ selectedAlbum.releaseDate }}</p>
+              </span></p>
+           <p class="mt-0">released in {{ selectedAlbum.releaseDate }}</p>
           </div>
-        </div>      
-  
+        </div>
+
         <div class="table-responsive mt-3">
           <table class="table table-striped">
             <thead>
@@ -50,18 +56,43 @@
             </thead>
             <tbody>
               <tr *ngFor="let song of selectedAlbum.songs">
-                <td class="px-0"><button class="btn btn-sm" (click)="setSong(song)"><i class="fa fa-play"></i></button></td>
+                <td class="px-0"><button class="btn btn-sm" (click)="setSong(song)"><i class="fa fa-play"></i></button>
+                </td>
                 <td>{{ song.id }}</td>
                 <td>{{ song.title }}</td>
                 <td>{{ song.length | minutes }}</td>
-                <td><button class="btn btn-sm" (click)="addToQueue(song)"><i class="fa fa-square-plus"></i></button></td>
+                <td><button class="btn btn-sm" (click)="addToQueue(song)"><i class="fa fa-square-plus"></i></button>
+                </td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <h2>Playlists</h2>
+
+      <div class="card-group">
+        <div class="col-6" *ngFor="let playlist of playlists">
+          <div class="card mb-3">
+            <div class="row no-gutters">
+              <div class="col-4">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="100%" height="100%" fill="#6c757d"></rect>
+                  <text x="50%" y="50%" fill="#dee2e6" dy=".3em">&#x266B;</text>
+                </svg>
+              </div>
+              <div class="col-8">
+                <div class="card-body">
+                  <div class="card-title">{{ playlist.name }}</div>
+                  <div class="card-text text-muted">{{ playlist.songs?.length }} songs</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
   </div>
 </div>
 
-<app-player></app-player>
+<app-player class="fixed-bottom bg-dark p-2"></app-player>

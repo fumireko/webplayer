@@ -1,34 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { MusicPlayerService } from '../services/music-player.service';
 import { Song } from '../shared/models/song.model';
 import { Album } from '../shared/models/album.model';
 import { ApiService } from '../services/api.service';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { Playlist } from '../shared/models/playlist.model';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'] // Corrected 'styleUrl' to 'styleUrls'
+  styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   content?: string;
   currentSong?: Song;
   albums: Album[] = [];
-
   selectedAlbum: Album = new Album();
   isPlaying: boolean = false;
   currentTime: number = 0;
   volume: number = 0.50;
+  playlists: Playlist[] = [];
 
-  private timerSubscription: Subscription | undefined;
-  
   constructor(private http: ApiService,
               private userService: UserService,
+              private storageService: StorageService,
               private musicPlayerService: MusicPlayerService) { }
 
   ngOnInit(): void {
-    this.currentSong = this.musicPlayerService.getCurrentSong();
+    //this.http.getPlaylistsByUserId(this.storageService.getUser().id).subscribe(e => {
+    this.http.getPlaylists().subscribe(e => {
+      this.playlists = e;
+    })
 
     this.http.getAlbums().subscribe((albums) => {
       this.albums = albums;
@@ -47,72 +51,20 @@ export class HomeComponent {
         }
       }
     });
-    this.timerSubscription = interval(499).subscribe(() => {
-      this.getCurrentTime();
-    });
-  }
 
-  ngOnDestroy(): void {
-    // Unsubscribe from the timerSubscription to prevent memory leaks
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
-    }
+    this.musicPlayerService.getCurrentSongObservable().subscribe(song => {
+      this.currentSong = song;
+    });
   }
 
   showAlbum(a: Album){
     this.selectedAlbum = a;
   }
 
-  playPause() {
-    if (this.isPlaying) {
-      this.pause();
-    } else {
-      this.play();
-    }
-  }
-
-  play() {
-    this.musicPlayerService.play();
-    this.isPlaying = true;
-  }
-
-  pause() {
-    this.musicPlayerService.pause();
-    this.isPlaying = false;
-  }
-
-  next() {
-    this.musicPlayerService.next();
-    this.currentSong = this.musicPlayerService.getCurrentSong();
-  }
-
-  previous() {
-    this.musicPlayerService.previous();
-    this.currentSong = this.musicPlayerService.getCurrentSong();
-  }
-
-  seekTo(event: Event) {
-    this.musicPlayerService.seekTo((event.target as HTMLInputElement).valueAsNumber);
-  }
-
   setSong(s: Song){
     this.musicPlayerService.addToQueue(s);
     this.musicPlayerService.setCurrentSong(s);
     this.isPlaying = true;
-    this.currentSong = this.musicPlayerService.getCurrentSong();
-    console.log(this.musicPlayerService.getCurrentSong());
-  }
-
-  getCurrentTime(): number {
-    return this.currentTime = this.musicPlayerService.getCurrentTime();
-  }
-
-  getTotalTime(): number {
-    return this.musicPlayerService.getTotalDuration();
-  }
-
-  changeVolume(){
-    this.musicPlayerService.changeVolume(this.volume);
   }
 
   addToQueue(s: Song){

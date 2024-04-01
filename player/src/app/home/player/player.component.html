@@ -1,35 +1,43 @@
 <div class="fixed-bottom bg-dark p-2 audio-player">
-    <div class="audio-info">
-      <img src="{{ currentSong?.album?.imageUrl }}" class="audio-img">
-      <div class="audio-song">
-        <h3>{{ currentSong?.title }}</h3>
-        <p>{{ currentSong?.album!.artists![0].name }}</p>
-      </div>
+  <!-- Audio Info -->
+  <div class="audio-info">
+    <img [src]="currentSong.album?.imageUrl" class="audio-img">
+    <div class="audio-song">
+      <h3>{{ currentSong.title }}</h3>
+      <p>{{ currentSong.album?.artists![0].name }}</p>
     </div>
-    <div class="audio-controls">
-      <div class="btn-group">
-        <button (click)="previous()"><i class="fa fa-step-backward"></i></button>
-        <button (click)="playPause()">
-          <i class="fa" [ngClass]="{ 'fa-pause': isPlaying, 'fa-play': !isPlaying }"></i>
-        </button>
-        <button (click)="next()"><i class="fa fa-step-forward"></i></button>  
-      </div>
-      
-      <input type="range" class="audio-slider" value="currentTime" min="0" [max]="getTotalTime()" (input)="seekTo($event)">
-      <div class="audio-time">
-        <span>{{ getCurrentTime() | minutes }}</span>
-        <span>{{ getTotalTime() | minutes }}</span>
-      </div>
+  </div>
+
+  <!-- Audio Controls -->
+  <div class="audio-controls">
+    <!-- Playback Controls -->
+    <div class="btn-group">
+      <button (click)="previous()"><i class="fa fa-step-backward"></i></button>
+      <button (click)="playPause()">
+        <i class="fa" [ngClass]="{ 'fa-pause': playing, 'fa-play': !playing }"></i>
+      </button>
+      <button (click)="next()"><i class="fa fa-step-forward"></i></button>
     </div>
-    <div class="audio-right">
-      <button class="btn btn-sm"><i class="fa fa-bars"></i></button>
-      <button class="btn btn-sm">
-        <i [ngClass]="{
-          'fa fa-volume-xmark': volume === 0,
-          'fa fa-volume-low': volume > 0 && volume < 0.5,
-          'fa fa-volume-high': volume >= 0.5
-        }"></i>
-      </button>    
-      <input type="range" class="audio-volume" [(ngModel)]="volume" min="0" max="1" step="0.01" (input)="changeVolume()">
-    </div>  
-  </div>  
+
+    <!-- Seeker -->
+    <input type="range" class="audio-slider" [(ngModel)]="currentTime" [min]="0" [max]="totalDuration" (input)="onSeek($event)">
+    <div class="audio-time">
+      <span>{{ formatTime(currentTime) }}</span>
+      <span>{{ formatTime(totalDuration) }}</span>
+    </div>
+  </div>
+
+  <!-- Audio Right Controls -->
+  <div class="audio-right">
+    <button class="btn btn-sm"><i class="fa fa-bars"></i></button>
+    <button class="btn btn-sm">
+      <i [ngClass]="{
+        'fa fa-volume-xmark': volume === 0,
+        'fa fa-volume-low': volume > 0 && volume < 0.5,
+        'fa fa-volume-high': volume >= 0.5
+      }"></i>
+    </button>
+    <!-- Volume Controls -->
+    <input type="range" class="audio-volume" [(ngModel)]="volume" [min]="0" [max]="1" step="0.01" (input)="onVolumeChange($event)">
+  </div>
+</div>
