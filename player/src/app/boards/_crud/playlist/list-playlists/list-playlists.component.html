@@ -22,48 +22,70 @@
   </li>
 </ul>
 
-<table class="table table-hover">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>User</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let playlist of playlists" (click)="showDetails(playlist)">
-        <td>{{ playlist.id }}</td>
-        <td>{{ playlist.name }}</td>
-        <td>{{ playlist.user?.username }}</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <div *ngIf="selectedPlaylist" class="my-3">
-    <hr>
-    <p class="text-center font-weight-bold">Playlist details</p>
+<div class="d-flex justify-content-between">
+  <h2>Playlists listing</h2>
+  <button class="btn btn-sm m-2 btn-secondary" (click)="toggleNewPlaylist()" [ngClass]="{'btn-success': !newPlaylistToggle}">
+    <span *ngIf="newPlaylistToggle">Cancel</span>
+    <span *ngIf="!newPlaylistToggle">New playlist</span>
+  </button>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col-6" [ngClass]="{'col-12': !selectedPlaylist}" *ngIf="!newPlaylistToggle">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>User</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let playlist of playlists" (click)="showDetails(playlist)" [ngClass]="{'table-primary': selectedPlaylist?.id == playlist.id}">
+          <td>{{ playlist.id }}</td>
+          <td>{{ playlist.name }}</td>
+          <td>{{ playlist.user?.username }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <div *ngIf="selectedPlaylist" class="row">
-    <div class="col-6">
+  <div class="col-6" *ngIf="selectedPlaylist && !newPlaylistToggle">
+    <p class="text-center font-weight-bold">Playlist details</p>
+      <div class="col">
         <p class="fs-5">{{ selectedPlaylist.name }} songs</p>
         <table class="table table-sm">
-        <thead>
+          <thead>
             <th>ID</th>
             <th>Title</th>
             <th>Length</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let song of selectedPlaylist.songs">
-                <td>{{ song.id }}</td>
-                <td>{{ song.title }}</td>
-                <td>{{ song.length }}</td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let song of selectedPlaylist?.songs">
+              <td>{{ song.id }}</td>
+              <td>{{ song.title }}</td>
+              <td>{{ song.length }}</td>
             </tr>
-        </tbody>
-        </table>''    
-    </div>
-
-    <div class="col-6">
+          </tbody>
+        </table>
+        <div *ngIf="addSongToggle">
+          <hr>
+          <p class="text-center font-weight-bold">Add Song</p>
+          <select class="form-control mb-2" [(ngModel)]="newSong" name="newSong">
+            <option *ngFor="let song of filterSongs()" [ngValue]="song">{{ song.title }}</option>
+          </select>
+          <div class="text-center">
+            <button class="btn btn-sm btn-success" (click)="addSong()">Add Song</button>
+            <button class="btn btn-sm btn-secondary" (click)="toggleAddSong()">Cancel</button>
+          </div>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-sm btn-primary" (click)="toggleAddSong()" *ngIf="!addSongToggle">Add Song</button>
+        </div>
+      </div>
+      <div class="col">
         <p class="fs-5">{{ selectedPlaylist.name }} User</p>
         <table class="table table-sm">
           <thead>
@@ -72,13 +94,31 @@
             <th>Email</th>
           </thead>
           <tbody>
-            <tr *ngFor="let user of selectedPlaylist.user">
-              <td>{{ user.id }}</td>
-              <td>{{ user.username }}</td>
-              <td>{{ user.email }}</td>
+            <tr>
+              <td>{{ selectedPlaylist.user?.id }}</td>
+              <td>{{ selectedPlaylist.user?.username }}</td>
+              <td>{{ selectedPlaylist.user?.email }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+  </div>
+
+  <div class="col-12" *ngIf="newPlaylistToggle">
+    <p class="text-center font-weight-bold">Create New Playlist</p>
+    <div class="col">
+        <label for="playlistName">Name:</label>
+        <input class="form-control" type="text" [(ngModel)]="newPlaylist.name" name="playlistName">
+    </div>
+    <div class="col">
+      <label for="playlistUser">User:</label>
+      <select class="form-control" [(ngModel)]="newPlaylist.user" name="playlistUser">
+        <option *ngFor="let user of users" [ngValue]="user">{{ user.username }}</option>
+      </select>
+    </div>
+    <div class="text-center mt-2">
+      <button class="btn btn-sm btn-success" (click)="saveNewPlaylist()">Save Playlist</button>
+      <button class="btn btn-sm btn-secondary" (click)="toggleNewPlaylist()">Cancel</button>
     </div>
   </div>
-  
+</div>
