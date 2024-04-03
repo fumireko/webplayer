@@ -8,6 +8,8 @@
   .card-img-top {
     min-width: 12rem;
     min-height: 12rem;
+    max-width: 12rem;
+    max-height: 12rem;
   }
 
   /* Styles for the audio player */

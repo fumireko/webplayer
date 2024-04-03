@@ -73,8 +73,17 @@ ngOnInit() {
   }
 
   getArtistsNames(album: Album | undefined): string {
-    if(album) if(album.artists) return album.artists?.map(artist => artist.name).join(', ');
-    return "";
+    console.log('Album:', album);
+    if(album) console.log('Artists:', album.artists);
+    
+    if(album && album.artists)
+      return album.artists.map(artist => artist.name).join(', ');
+    else
+      return "";
+  }
+
+  formatFileName(url: string){
+    return url.substring(url.lastIndexOf('/') + 1).split('.').slice(0, -1).join('.');
   }
 
   showDetails(_t11: Song){
@@ -87,15 +96,19 @@ ngOnInit() {
     if(this.editSong){
       this.selectedSongAlbum = this.selectedSong.album!;
       this.http.updateSong(this.selectedSong).subscribe(s => {
-        let song = this.songs.find(s => s.id == this.selectedSong.id)
-        song = s;
-        this.selectedSong = s;
-      })
-      this.http.updateAlbum(this.selectedSongAlbum).subscribe(a => {
-        let album = this.albums.find(a => a.id == this.selectedSongAlbum.id);
-        album = a;
-        this.selectedSongAlbum = a;
+        let songIndex = this.songs.findIndex(song => song.id === this.selectedSong.id);
+        if (songIndex !== -1) {
+          this.songs[songIndex] = s;
+          this.selectedSong = s;
+        }
       });
+      this.http.updateAlbum(this.selectedSongAlbum).subscribe(a => {
+        let albumIndex = this.albums.findIndex(album => album.id === this.selectedSongAlbum.id);
+        if (albumIndex !== -1) {
+          this.albums[albumIndex] = a;
+          this.selectedSongAlbum = a;
+        }
+      });      
       this.editSong = !this.editSong;
     }
     else this.editSong = !this.editSong;
@@ -110,10 +123,13 @@ ngOnInit() {
     if (this.editAlbum) { 
       this.songs.filter(s => s.album?.id === this.selectedSong.album?.id).forEach(e => e.album = this.selectedSong.album);
       this.http.updateAlbum(this.selectedSongAlbum).subscribe(a => {
-        let album = this.albums.find(a => a.id == this.selectedSongAlbum)
-        album = a;
-        this.selectedSongAlbum = a;
-      });
+        let albumIndex = this.albums.findIndex(album => album.id === this.selectedSongAlbum.id);
+        if (albumIndex !== -1) {
+          this.albums[albumIndex] = a;
+          this.selectedSong.album = a; // Update the album for the selected song
+          this.songs.filter(s => s.album?.id === this.selectedSong.album?.id).forEach(e => e.album = a);
+        }
+      });      
       this.editAlbum = !this.editAlbum;
     } 
     else this.editAlbum = !this.editAlbum;
@@ -151,14 +167,16 @@ ngOnInit() {
   saveNewSong(){
     this.http.saveSong(this.newSong).subscribe(e => {
       this.songs.push(e);
+      JSON.parse(this.resetSongs).push(e);
       this.resetListing();
       this.newSongToggle = false;
-    })
+      this.newSong = new Song();    
+    });
   }
 
   resetListing(){
     this.songs = JSON.parse(this.resetSongs);
-    this.albums = JSON.parse(this.resetSongs);
+    this.albums = JSON.parse(this.resetAlbums);
     if(this.selectedSongReset) this.selectedSong = JSON.parse(this.selectedSongReset);
     this.selectedSongAlbum = this.selectedSong.album!;
     this.newSongToggle = false;

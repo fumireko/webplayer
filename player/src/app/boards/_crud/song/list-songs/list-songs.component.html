@@ -214,7 +214,7 @@
         <select class="form-control" name="file" [(ngModel)]="newSong.file" name="length">
           <ng-container *ngFor="let file of files">
               <option [ngValue]="file">
-                {{ file.url }}
+                {{ formatFileName(file.url!) }}
               </option>
           </ng-container>
         </select>
