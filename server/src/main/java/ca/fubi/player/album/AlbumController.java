@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.fubi.player.artist.Artist;
 import ca.fubi.player.artist.ArtistRepository;
+import ca.fubi.player.song.Song;
 import ca.fubi.player.song.SongRepository;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,10 +40,16 @@ public class AlbumController {
 	private SongRepository songRepo;
 	
 	@GetMapping("/")
-	public ResponseEntity<List<Album>> getAlbums(){
-		return ResponseEntity.ok(albumRepo.findAll());
+	public ResponseEntity<List<Album>> getAlbums() {
+	    List<Album> albums = albumRepo.findAll();
+	    albums.forEach(album -> {
+	        List<Song> sortedSongs = new ArrayList<>(album.getSongs());
+	        sortedSongs.sort(Comparator.comparing(Song::getId));
+	        album.setSongs(new LinkedHashSet<>(sortedSongs));
+	    });
+	    return ResponseEntity.ok(albums);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<Album>> getAlbumById(@PathVariable Long id){
 		if(id != null) {
@@ -108,8 +118,14 @@ public class AlbumController {
 	                album.setImageUrl(update.getImageUrl());
 	                album.setReleaseDate(update.getReleaseDate());
 	                album.setArtists(update.getArtists());
-	                update.getSongs().forEach(songRepo::save);
-	                update.getArtists().forEach(artistRepo::save);
+	                update.getSongs().forEach(song -> {
+	                    song.setAlbum(album);
+	                    songRepo.save(song);
+	                });
+	                update.getArtists().forEach(artist -> {
+	                	artist.addAlbum(album);
+	                	artistRepo.save(artist);
+	                });
 	                return ResponseEntity.ok(albumRepo.save(album));
 	            })
 	            .orElse(ResponseEntity.notFound().build());
