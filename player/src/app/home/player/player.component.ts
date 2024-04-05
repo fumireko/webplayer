@@ -10,17 +10,22 @@ import { Song } from '../../shared/models/song.model';
 })
 export class PlayerComponent implements OnInit, OnDestroy {
   currentSong: Song = new Song();
-  currentTime: number = 0;
-  totalDuration: number = 0;
-  volume: number = 0.5;
+  currentTime = 0;
+  totalDuration = 0;
+  volume = 0.5;
   queue: Song[] = [];
-  playing: boolean = false;
-
-  private playerSubscription: Subscription | undefined;
+  playing = true;
+  playerSubscription: Subscription | undefined;
+  isShuffled: boolean = false;
+  isRepeated: boolean = false;
 
   constructor(private musicPlayerService: MusicPlayerService) {}
 
   ngOnInit(): void {
+    this.playerSubscription = interval(1000).subscribe(() => {
+      this.currentTime = this.musicPlayerService.getCurrentTime();
+    });
+
     this.musicPlayerService.getCurrentSongObservable().subscribe(song => {
       if (song) {
         this.currentSong = song;
@@ -28,25 +33,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.queue = this.musicPlayerService.getQueue();
       }
     });
-
-    this.playerSubscription = interval(1000).subscribe(() => {
-      this.currentTime = this.musicPlayerService.getCurrentTime();
-    });
   }
 
   ngOnDestroy(): void {
-    if (this.playerSubscription) {
-      this.playerSubscription.unsubscribe();
-    }
+    this.playerSubscription?.unsubscribe();
   }
 
   playPause(): void {
-    if (this.playing) {
-      this.musicPlayerService.pause();
-    } else {
-      this.musicPlayerService.play();
-    }
-    this.playing = !this.playing;
+    this.playing ? this.musicPlayerService.pause() : this.musicPlayerService.play();
+    this.playing = this.musicPlayerService.isPlayingBool();
   }
 
   next(): void {
@@ -57,17 +52,33 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.musicPlayerService.previous();
   }
 
-  onSeek(e: Event): void {
-    if (e.target) this.musicPlayerService.seekTo(parseInt((<HTMLInputElement>e.target).value));
+  onSeek(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.musicPlayerService.seekTo(parseInt(target.value));
   }
 
-  onVolumeChange(e: Event): void {
-    if (e.target) this.musicPlayerService.changeVolume(parseInt((<HTMLInputElement>e.target).value));
+  onVolumeChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.musicPlayerService.changeVolume(parseInt(target.value));
+  }
+
+  handleMute(): void { 
+    this.musicPlayerService.changeVolume(this.volume === 0 ? 0.5 : 0);
+  }
+
+  toggleShuffle(): void {
+    this.musicPlayerService.shuffle();
+    this.isShuffled = !this.isShuffled;
+  }
+
+  toggleRepeat(): void {
+    this.musicPlayerService.repeat();
+    this.isRepeated = !this.isRepeated;
   }
   
   formatTime(time: number): string {
-    const minutes: number = Math.floor(time / 60);
-    const seconds: number = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return time !== 0 ? `${minutes}:${seconds < 10 ? '0' : ''}${seconds}` : '-';
   }
 }
