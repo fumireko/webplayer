@@ -5,6 +5,10 @@
     text-wrap: nowrap;
   }
 
+  .card {
+    max-width: 12rem;
+  }
+
   .card-img-top {
     min-width: 12rem;
     min-height: 12rem;

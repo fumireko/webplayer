@@ -22,7 +22,7 @@
         <div class="col" *ngFor="let album of albums" (click)="showAlbum(album)">
           <div class="card mb-3" [ngClass]="{'bg-dark': selectedAlbum.id == album.id}">
             <img src="{{ album.imageUrl }}" class="card-img-top">
-            <div class="card-footer">
+            <div class="card-footer text-truncate">
               <small
                 [ngClass]="{'text-light': selectedAlbum.id == album.id, 'text-muted': selectedAlbum.id != album.id}">{{
                 album.title }}</small>
