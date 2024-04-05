@@ -10,16 +10,25 @@ export class MusicPlayerService {
   private queue: Song[] = [];
   private currentSongIndex = 0;
   private isPlaying: boolean = false;
+  private isShuffled: boolean = false;
+  private isRepeated: boolean = false;
   private currentSongSubject: BehaviorSubject<Song | undefined> = new BehaviorSubject<Song | undefined>(undefined);
 
   constructor() {
-    this.audio.addEventListener('ended', () => this.next());
+    this.audio.addEventListener('ended', () => this.handleTrackEnd());
   }
 
   addToQueue(song: Song) {
     this.queue.push(song);
     if (this.queue.length === 1) {
       this.setCurrentSong(song);
+    }
+  }
+
+  addToQueueFromAlbum(albumSongs: Song[]) {
+    this.queue.push(...albumSongs);
+    if (this.queue.length === albumSongs.length) {
+      this.setCurrentSong(albumSongs[0]);
     }
   }
 
@@ -50,14 +59,37 @@ export class MusicPlayerService {
 
   next() {
     if (this.queue.length === 0) return;
-    this.currentSongIndex = (this.currentSongIndex + 1) % this.queue.length;
-    this.setCurrentSong(this.queue[this.currentSongIndex]);
+    if (this.isRepeated) {
+      this.setCurrentSong(this.queue[this.currentSongIndex]);
+    } else {
+      if (this.isShuffled) {
+        this.shuffleQueue();
+      }
+      this.currentSongIndex = (this.currentSongIndex + 1) % this.queue.length;
+      this.setCurrentSong(this.queue[this.currentSongIndex]);
+    }
   }
 
   previous() {
     if (this.queue.length === 0) return;
+    if (this.isShuffled) {
+      this.shuffleQueue();
+    }
     this.currentSongIndex = (this.currentSongIndex - 1 + this.queue.length) % this.queue.length;
     this.setCurrentSong(this.queue[this.currentSongIndex]);
+  }
+
+  shuffle() {
+    this.isShuffled = !this.isShuffled;
+    if (this.isShuffled) {
+      this.shuffleQueue();
+    } else {
+      this.setCurrentSong(this.queue[this.currentSongIndex]);
+    }
+  }
+
+  repeat() {
+    this.isRepeated = !this.isRepeated;
   }
 
   setCurrentSong(song: Song) {
@@ -117,5 +149,28 @@ export class MusicPlayerService {
   private updateCurrentSong() {
     const currentSong = this.queue[this.currentSongIndex];
     this.currentSongSubject.next(currentSong);
+  }
+
+  private shuffleQueue() {
+    let currentIndex = this.queue.length;
+    let temporaryValue: Song;
+    let randomIndex: number;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = this.queue[currentIndex];
+      this.queue[currentIndex] = this.queue[randomIndex];
+      this.queue[randomIndex] = temporaryValue;
+    }
+  }
+
+  private handleTrackEnd() {
+    if (this.isRepeated) {
+      this.setCurrentSong(this.queue[this.currentSongIndex]);
+    } else {
+      this.next();
+    }
   }
 }
