@@ -23,6 +23,8 @@ import { MinutesPipe } from './shared/pipes/minutes.pipe';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { PlayerComponent } from './home/player/player.component';
 import { NavComponent } from './home/nav/nav.component';
+import { QueueComponent } from './home/player/queue/queue.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,8 @@ import { NavComponent } from './home/nav/nav.component';
     ListSongsComponent,
     MinutesPipe,
     PlayerComponent,
-    NavComponent
+    NavComponent,
+    QueueComponent
   ],
   imports: [
     CommonModule,
@@ -49,6 +52,7 @@ import { NavComponent } from './home/nav/nav.component';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    NgbModule
   ],
   providers: [httpInterceptorProviders, provideAnimationsAsync()],
   bootstrap: [AppComponent]
