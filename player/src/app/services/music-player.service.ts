@@ -25,6 +25,25 @@ export class MusicPlayerService {
     }
   }
 
+  removeFromQueue(song: Song) {
+    const index = this.queue.indexOf(song);
+    if (index !== -1) {
+      this.queue.splice(index, 1);
+      if (index < this.currentSongIndex) {
+        this.currentSongIndex--;
+      } else if (index === this.currentSongIndex) {
+        if (this.queue.length === 0) {
+          this.audio.pause();
+          this.isPlaying = false;
+          this.currentSongIndex = 0;
+          this.currentSongSubject.next(undefined);
+        } else {
+          this.next();
+        }
+      }
+    }
+  }
+
   addToQueueFromAlbum(albumSongs: Song[]) {
     this.queue.push(...albumSongs);
     if (this.queue.length === albumSongs.length) {
