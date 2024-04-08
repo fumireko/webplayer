@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 import { MusicPlayerService } from '../../services/music-player.service';
 import { Song } from '../../shared/models/song.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { QueueComponent } from './queue/queue.component';
 
 @Component({
   selector: 'app-player',
@@ -19,7 +21,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
   isShuffled: boolean = false;
   isRepeated: boolean = false;
 
-  constructor(private musicPlayerService: MusicPlayerService) {}
+  constructor(private musicPlayerService: MusicPlayerService,
+              private modalService: NgbModal) {}
 
   ngOnInit(): void {
     this.playerSubscription = interval(1000).subscribe(() => {
@@ -80,5 +83,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return time !== 0 ? `${minutes}:${seconds < 10 ? '0' : ''}${seconds}` : '-';
+  }
+
+  showQueue(): void {
+    const modalRef = this.modalService.open(QueueComponent);
+    modalRef.componentInstance.queue = this.queue;
+    modalRef.componentInstance.removeSong.subscribe((song: Song) => {
+      this.musicPlayerService.removeFromQueue(song);
+    });
   }
 }

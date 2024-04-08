@@ -1,0 +1,27 @@
+<h1>Queue</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Title</th>
+      <th>Artist</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let song of queue">
+      <td>
+        <button class="btn btn-sm btn-outline-secondary">
+          <i class="fa fa-play"></i>
+        </button>
+      </td>
+      <td>{{ song.title }}</td>
+      <td>{{ song.album?.artists![0].name }}</td>
+      <td>
+        <button class="btn btn-danger btn-sm" (click)="removeFromQueue(song)">
+          <i class="fa fa-times"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
