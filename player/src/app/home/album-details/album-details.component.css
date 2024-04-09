@@ -1,0 +1,15 @@
+button {
+    color: #fff
+}
+
+.table-darker {
+    width: 100%;
+    margin-bottom: 1rem;
+    vertical-align: top;
+    border-color: #000;
+    background-color: #101010;
+}
+
+.table-darker {
+    color: #fff
+}
