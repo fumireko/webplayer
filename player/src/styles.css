@@ -1,4 +1,10 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    background-color: #121212;
+    font-family: 'Montserrat', sans-serif;
+}
 
 .table {
     background-color: white !important;
@@ -6,6 +12,7 @@
 
 .img-fluid {
     max-width: 12rem !important;
+    max-height: 12rem !important;
 }
 
 .navbar {
