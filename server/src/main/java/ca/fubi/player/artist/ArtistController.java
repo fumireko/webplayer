@@ -1,7 +1,11 @@
 package ca.fubi.player.artist;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.fubi.player.album.Album;
 import ca.fubi.player.genre.Genre;
+import ca.fubi.player.song.Song;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
@@ -43,6 +49,15 @@ public class ArtistController {
 		}
 		else return ResponseEntity.badRequest().build();
 	}
+	
+    @GetMapping("/{id}/songs")
+    public ResponseEntity<List<Song>> getAllSongsOfArtist(@PathVariable Long id) {
+        return artistRepo.findById(id)
+            .map(artist -> ResponseEntity.ok(artist.getAlbums().stream()
+                .flatMap(album -> album.getSongs().stream())
+                .collect(Collectors.toList())))
+            .orElse(ResponseEntity.notFound().build());
+    }
 	
 	@GetMapping("/name")
 	public ResponseEntity<Optional<Artist>> getArtistByName(@RequestParam(name = "value", required = true) String name){

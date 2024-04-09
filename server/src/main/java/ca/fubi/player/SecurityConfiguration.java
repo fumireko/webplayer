@@ -29,6 +29,7 @@ public class SecurityConfiguration {
             "/users/signout/*",
             "/api/albums/*",
             "/api/artists/*",
+            "/api/artists/*/songs",
             "/api/genres/*",
             "/api/playlists/*",
             "/api/songs/*",

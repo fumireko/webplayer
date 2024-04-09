@@ -51,17 +51,21 @@ public class AlbumController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Optional<Album>> getAlbumById(@PathVariable Long id){
-		if(id != null) {
-			
-			Optional<Album> a = albumRepo.findById(id);
-			System.out.println("Size of songs array: " + a.get().getSongs().size());
-			if(a.isEmpty())
-				 return ResponseEntity.notFound().build();
-			else return ResponseEntity.ok(a);
-		}
-		else return ResponseEntity.badRequest().build();
-	}
+    public ResponseEntity<Optional<Album>> getAlbumById(@PathVariable Long id){
+        if(id != null) {
+            Optional<Album> album = albumRepo.findById(id);
+            if(album.isPresent()) {
+                List<Song> sortedSongs = new ArrayList<>(album.get().getSongs());
+                sortedSongs.sort(Comparator.comparing(Song::getId));
+                album.get().setSongs(new LinkedHashSet<>(sortedSongs));
+                return ResponseEntity.ok(album);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 	
 	@GetMapping("/title")
 	public ResponseEntity<Optional<Album>> getAlbumByTitle(@RequestParam(name = "value", required = true) String title){
