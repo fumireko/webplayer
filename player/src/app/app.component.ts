@@ -46,4 +46,12 @@ export class AppComponent {
       }
     });
   }
+
+  navigateBack() {
+    window.history.back();
+  }
+
+  navigateForward() {
+    window.history.forward();
+  }
 }

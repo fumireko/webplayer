@@ -30,6 +30,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     });
 
     this.musicPlayerService.getCurrentSongObservable().subscribe(song => {
+      console.log(song);
       if (song) {
         this.currentSong = song;
         this.totalDuration = this.musicPlayerService.getTotalDuration();

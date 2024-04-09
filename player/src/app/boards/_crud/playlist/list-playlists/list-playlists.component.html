@@ -53,7 +53,7 @@
   </div>
 
   <div class="col-6" *ngIf="selectedPlaylist && !newPlaylistToggle">
-    <p class="text-center font-weight-bold">Playlist details</p>
+    <p class="text-center fw-bold">Playlist details</p>
       <div class="col">
         <p class="fs-5">{{ selectedPlaylist.name }} songs</p>
         <table class="table table-sm">
@@ -72,7 +72,7 @@
         </table>
         <div *ngIf="addSongToggle">
           <hr>
-          <p class="text-center font-weight-bold">Add Song</p>
+          <p class="text-center fw-bold">Add Song</p>
           <select class="form-control mb-2" [(ngModel)]="newSong" name="newSong">
             <option *ngFor="let song of filterSongs()" [ngValue]="song">{{ song.title }}</option>
           </select>
@@ -105,7 +105,7 @@
   </div>
 
   <div class="col-12" *ngIf="newPlaylistToggle">
-    <p class="text-center font-weight-bold">Create New Playlist</p>
+    <p class="text-center fw-bold">Create New Playlist</p>
     <div class="col">
         <label for="playlistName">Name:</label>
         <input class="form-control" type="text" [(ngModel)]="newPlaylist.name" name="playlistName">

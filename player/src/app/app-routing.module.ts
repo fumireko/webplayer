@@ -12,6 +12,8 @@ import { ListAlbumsComponent } from './boards/_crud/album/list-albums/list-album
 import { ListGenresComponent } from './boards/_crud/genre/list-genres/list-genres.component';
 import { ListPlaylistsComponent } from './boards/_crud/playlist/list-playlists/list-playlists.component';
 import { ListSongsComponent } from './boards/_crud/song/list-songs/list-songs.component';
+import { AlbumDetailsComponent } from './home/album-details/album-details.component';
+import { ArtistDetailsComponent } from './home/artist-details/artist-details.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -29,6 +31,8 @@ const routes: Routes = [
   { path: 'admin/playlists', component: ListPlaylistsComponent },
   { path: 'admin/songs', component: ListSongsComponent },
   { path: 'admin/songs/:id', component: ListSongsComponent },
+  { path: 'albums/:id', component: AlbumDetailsComponent},
+  { path: 'artists/:id', component: ArtistDetailsComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

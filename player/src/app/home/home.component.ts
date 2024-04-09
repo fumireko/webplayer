@@ -7,6 +7,7 @@ import { ApiService } from '../services/api.service';
 import { Subscription } from 'rxjs';
 import { Playlist } from '../shared/models/playlist.model';
 import { StorageService } from '../services/storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -25,6 +26,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private http: ApiService,
               private userService: UserService,
+              private router: Router,
               private storageService: StorageService,
               private musicPlayerService: MusicPlayerService) { }
 
@@ -57,9 +59,9 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  showAlbum(a: Album){
-    this.selectedAlbum = a;
-  }
+  showAlbum(album: Album) {
+    this.router.navigate(['/albums', album.id]);
+  }  
 
   setSong(s: Song){
     this.musicPlayerService.addToQueue(s);

@@ -52,7 +52,7 @@
   </div>
 
   <div class="col-6" *ngIf="selectedGenre && !newGenreToggle">
-    <p class="text-center font-weight-bold">Genre details</p>
+    <p class="text-center fw-bold">Genre details</p>
     <ul>
       <li><b>ID:</b>
         <span> {{ selectedGenre.id }}</span>
@@ -85,7 +85,7 @@
   </div>
   
   <div class="col-12" *ngIf="newGenreToggle">
-    <p class="text-center font-weight-bold">New genre</p>
+    <p class="text-center fw-bold">New genre</p>
     <ul>
       <li><b>Description:</b>
         <input class="form-control" type="text" [(ngModel)]="newGenre.description">

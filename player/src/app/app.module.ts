@@ -25,6 +25,9 @@ import { PlayerComponent } from './home/player/player.component';
 import { NavComponent } from './home/nav/nav.component';
 import { QueueComponent } from './home/player/queue/queue.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AlbumDetailsComponent } from './home/album-details/album-details.component';
+import { PlaylistDetailsComponent } from './home/playlist-details/playlist-details.component';
+import { ArtistDetailsComponent } from './home/artist-details/artist-details.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MinutesPipe,
     PlayerComponent,
     NavComponent,
-    QueueComponent
+    QueueComponent,
+    AlbumDetailsComponent,
+    PlaylistDetailsComponent,
+    ArtistDetailsComponent
   ],
   imports: [
     CommonModule,

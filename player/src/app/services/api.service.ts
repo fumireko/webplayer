@@ -20,9 +20,21 @@ export class ApiService {
   getArtists(): Observable<Artist[]> {
     return this.http.get<Artist[]>(AppComponent.PUBLIC_BACKEND_URL + '/api/artists/', { withCredentials: false });
   }
+  
+  getArtistSongs(id: number): Observable<Song[]> {
+    return this.http.get<Song[]>(`${AppComponent.PUBLIC_BACKEND_URL}/api/artists/${id}/songs`, { withCredentials: false });
+  }
+  
+  getArtistById(id: number): Observable<Artist> {
+    return this.http.get<Artist>(`${AppComponent.PUBLIC_BACKEND_URL}/api/artists/${id}`, { withCredentials: false });
+  }
 
   getAlbums(): Observable<Album[]> {
     return this.http.get<Artist[]>(AppComponent.PUBLIC_BACKEND_URL + '/api/albums/', { withCredentials: false });
+  }
+
+  getAlbumById(id: number): Observable<Album> {
+    return this.http.get<Album>(`${AppComponent.PUBLIC_BACKEND_URL}/api/albums/${id}`, { withCredentials: false });
   }
 
   getGenres(): Observable<Genre[]> {

@@ -1,40 +1,89 @@
 <div id="app">
-  <nav class="navbar navbar-expand navbar-dark bg-dark px-5">
-    <a href="#" class="navbar-brand">Navbar</a>
-    <ul class="navbar-nav me-auto" routerLinkActive="active">
-      <li class="nav-item">
-        <a href="/home" class="nav-link" routerLink="home">Home</a>
-      </li>
-      <li class="nav-item" *ngIf="showAdminBoard">
-        <a href="/admin" class="nav-link" routerLink="admin">Admin Board</a>
-      </li>
-      <li class="nav-item" *ngIf="showModeratorBoard">
-        <a href="/mod" class="nav-link" routerLink="mod">Moderator Board</a>
-      </li>
-      <li class="nav-item" *ngIf="isLoggedIn">
-        <a href="/user" class="nav-link" routerLink="user">User</a>
-      </li>
-    </ul>
+  <div class="topbar">
+    <div class="prev-next-buttons">
+      <button type="button" class="fa fas fa-chevron-left" (click)="navigateBack()"></button>
+      <button type="button" class="fa fas fa-chevron-right" (click)="navigateForward()"></button>
+    </div>    
 
-    <ul class="navbar-nav ms-auto" *ngIf="!isLoggedIn">
-      <li class="nav-item">
-        <a href="/register" class="nav-link" routerLink="register">Sign up</a>
-      </li>
-      <li class="nav-item">
-        <a href="/login" class="nav-link" routerLink="login">Login</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav ms-auto" *ngIf="isLoggedIn">
-      <li class="nav-item">
-        <a href="/profile" class="nav-link" routerLink="profile">{{ username }}</a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link" (click)="logout()">Logout</a>
-      </li>
-    </ul>
-  </nav>
+    <div class="navbar">
+      <ul>
+        <li>
+          <a href="#">Premium</a>
+        </li>
+        <li>
+          <a href="#">Support</a>
+        </li>
+        <li>
+          <a href="#">Download</a>
+        </li>
+        <li class="divider">|</li>
+        <li *ngIf="!isLoggedIn">
+          <a routerLink="register">Sign Up</a>
+        </li>
+        <li *ngIf="!isLoggedIn">
+          <a routerLink="login">Log In</a>
+        </li>
+        <li *ngIf="showAdminBoard">
+          <a href="/admin">Admin Board</a>
+        </li>
+        <li *ngIf="isLoggedIn">
+          <a href="#" (click)="logout()">Logout</a>
+        </li>
+        <li *ngIf="isLoggedIn" class="dropdown">
+          <button class="dropdown-toggle" role="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ username }}
+          </button>
+          <ul class="dropdown-menu row" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item text-dark m-0" href="/profile">Profile</a></li>
+            <li><a class="dropdown-item text-dark m-0" (click)="logout()">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-  <div class="container">
+  <div class="sidebar">
+    <div class="navigation">
+      <ul class="mt-5">
+        <li>
+          <a href="#">
+            <span class="fa fa-home"></span>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#">
+            <span class="fa fa-search"></span>
+            <span>Search</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#">
+            <span class="fa fas fa-book"></span>
+            <span>Your Library</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#">
+            <span class="fa fas fa-plus-square"></span>
+            <span>Create Playlist</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#">
+            <span class="fa fas fa-heart"></span>
+            <span>Liked Songs</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="main-container text-light">
     <router-outlet></router-outlet>
   </div>
 </div>

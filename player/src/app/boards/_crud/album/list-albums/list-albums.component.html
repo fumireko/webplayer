@@ -55,7 +55,7 @@
   </div>
   <div class="col-6" *ngIf="selectedAlbum.id && !newAlbumToggle">
     <form #albumForm="ngForm"> 
-      <p class="text-center font-weight-bold">Album details</p>
+      <p class="text-center fw-bold">Album details</p>
       <ul>
         <li><b>Title:</b>
           <span *ngIf="!editAlbum; else albumTitleInput"> {{ selectedAlbum.title }}</span>
@@ -100,7 +100,7 @@
     
     <hr>
 
-    <p class="text-center font-weight-bold">Album artists</p>
+    <p class="text-center fw-bold">Album artists</p>
     <table class="table table-hover table-sm">
       <thead>
         <th>ID</th>
@@ -154,7 +154,7 @@
         
     <hr>
 
-    <p class="text-center font-weight-bold">Album songs</p>
+    <p class="text-center fw-bold">Album songs</p>
     <table class="table table-hover table-sm">
       <thead>
           <th>ID</th>
@@ -172,7 +172,7 @@
   </div>
 
 <div class="col-12" *ngIf="newAlbumToggle">
-  <p class="text-center font-weight-bold">Album details</p>
+  <p class="text-center fw-bold">Album details</p>
     <ul>
       <li><b>Title:</b>
         <input class="form-control" type="text" [(ngModel)]="newAlbum.title" name="albumTitle">
