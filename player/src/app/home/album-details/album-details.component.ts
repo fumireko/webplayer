@@ -4,6 +4,8 @@ import { Album } from '../../shared/models/album.model';
 import { MusicPlayerService } from '../../services/music-player.service';
 import { Song } from '../../shared/models/song.model';
 import { ApiService } from '../../services/api.service';
+import { AppComponent } from '../../app.component';
+import { StyleService } from '../../services/style.service';
 
 @Component({
   selector: 'app-album-details',
@@ -13,17 +15,21 @@ import { ApiService } from '../../services/api.service';
 export class AlbumDetailsComponent implements OnInit {
   album: Album | undefined;
   hoveredSong: Song = new Song();
+  averageColor: string = "";
 
   constructor(
     private route: ActivatedRoute,
     private api: ApiService,
-    private musicPlayerService: MusicPlayerService
+    private musicPlayerService: MusicPlayerService,
+    private styleService: StyleService
   ){}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
         this.api.getAlbumById(parseInt(params.get('id')!)).subscribe(a => {
           this.album = a;
+          this.styleService.calculateAverageColor(this.album);
+          this.styleService.averageColor.subscribe(c => this.averageColor = c);
         });
     });
   }

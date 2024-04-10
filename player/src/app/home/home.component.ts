@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { Playlist } from '../shared/models/playlist.model';
 import { StorageService } from '../services/storage.service';
 import { Router } from '@angular/router';
+import { StyleService } from '../services/style.service';
 
 @Component({
   selector: 'app-home',
@@ -23,11 +24,12 @@ export class HomeComponent implements OnInit {
   currentTime: number = 0;
   volume: number = 0.50;
   playlists: Playlist[] = [];
+  averageColor: any;
 
   constructor(private http: ApiService,
               private userService: UserService,
               private router: Router,
-              private storageService: StorageService,
+              private styleService: StyleService,
               private musicPlayerService: MusicPlayerService) { }
 
   ngOnInit(): void {
@@ -57,6 +59,8 @@ export class HomeComponent implements OnInit {
     this.musicPlayerService.getCurrentSongObservable().subscribe(song => {
       this.currentSong = song;
     });
+
+    this.styleService.averageColor.subscribe(c => this.averageColor = c);
   }
 
   showAlbum(album: Album) {

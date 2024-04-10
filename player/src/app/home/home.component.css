@@ -168,8 +168,9 @@ li {
 
 .spotify-playlists .list {
   display: flex;
-  gap: 1.25em; /* Changed to em */
-  overflow: hidden;
+  gap: 1.25em; 
+  overflow: auto;
+  margin-bottom: 1em;
 }
 
 .spotify-playlists .list .item {
@@ -180,6 +181,7 @@ li {
   border-radius: 0.375em; /* Changed to em */
   cursor: pointer;
   transition: all ease 0.4s;
+  margin-bottom: 0.5em;
 }
 
 .spotify-playlists .list .item:hover {

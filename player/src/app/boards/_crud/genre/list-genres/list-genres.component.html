@@ -1,27 +1,28 @@
 <!-- list-genres.component.html -->
-<ul class="nav nav-tabs mx-auto my-3">
+<ul class="nav nav-tabs mx-auto mb-3">
   <li class="nav-item">
-    <a class="nav-link" href="#">Overview</a>
+    <a class="nav-link" [routerLink]="['/admin']">Overview</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="admin/albums">Album</a>
+    <a class="nav-link" [routerLink]="['/admin/albums']">Album</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="admin/artists">Artist</a>
+    <a class="nav-link" [routerLink]="['/admin/artists']">Artist</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="admin/genres">Genre</a>
+    <a class="nav-link" [routerLink]="['/admin/genres']">Genre</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="admin/playlists">Playlist</a>
+    <a class="nav-link" [routerLink]="['/admin/playlists']">Playlist</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="admin/songs">Song</a>
+    <a class="nav-link" [routerLink]="['/admin/songs']">Song</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="admin/users">User</a>
+    <a class="nav-link" [routerLink]="['/admin/users']">User</a>
   </li>
 </ul>
+
 
 <div class="d-flex justify-content-between">
   <h2>Genres listing</h2>

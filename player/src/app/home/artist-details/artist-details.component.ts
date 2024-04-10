@@ -5,6 +5,7 @@ import { MusicPlayerService } from '../../services/music-player.service';
 import { Artist } from '../../shared/models/artist.model';
 import { Song } from '../../shared/models/song.model';
 import { Album } from '../../shared/models/album.model';
+import { StyleService } from '../../services/style.service';
 
 @Component({
   selector: 'app-artist-details',
@@ -16,11 +17,13 @@ export class ArtistDetailsComponent implements OnInit {
   hoveredSong: Song = new Song();
   artistSongs: Song[] = [];
   artistPlaying: boolean = false;
+  averageColor: any;
 
   constructor(
     private route: ActivatedRoute,
     private apiService: ApiService,
-    private musicPlayerService: MusicPlayerService
+    private musicPlayerService: MusicPlayerService,
+    private styleService: StyleService
   ){}
 
   ngOnInit(): void {
@@ -33,6 +36,7 @@ export class ArtistDetailsComponent implements OnInit {
           this.artistSongs = s;
         });
 
+        this.styleService.averageColor.subscribe(c => this.averageColor = c);
       });
     });
   }

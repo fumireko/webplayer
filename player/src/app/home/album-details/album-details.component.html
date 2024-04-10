@@ -1,46 +1,50 @@
-<div *ngIf="album" class="album-details d-flex justify-content-start text-light px-5">
-<img [src]="album.imageUrl" class="img-fluid">
-<div class="text-container mx-4">
-    <h1 class="fw-bold">{{ album.title || "Album" }}</h1>
-    <div class="mt-1">
-        <small class="mb-0">
-            by 
-            <span *ngFor="let artist of album?.artists; let last = last">
-              <a [routerLink]="['/artists', artist.id]">{{ artist.name }}</a>{{ !last ? ', ' : '' }}
-            </span>
-            | released in {{ album.releaseDate }}
-        </small>          
-    </div>
+<div class="content" [ngStyle]="{'background': 'linear-gradient(to bottom, ' + averageColor + ', #121212)'}">
+    <div *ngIf="album" class="album-details d-flex justify-content-start text-light px-5">
+        <img [src]="album.imageUrl" class="img-fluid">
+      <div class="text-container mx-4 mt-auto">
+          <h1 class="fw-bold mb-0">{{ album.title || "Album" }}</h1>
+          <div class="mt-0">
+              <small class="mb-0">
+                  by 
+                  <span *ngFor="let artist of album?.artists; let last = last">
+                    <a style="text-decoration: none; color: #e8fbfc" [routerLink]="['/artists', artist.id]">{{ artist.name }}</a>{{ !last ? ', ' : '' }}
+                  </span>
+                  | released in {{ album.releaseDate }}
+              </small>          
+          </div>
+      </div>
+      </div>
+      
+      <div class="table-responsive mt-3 px-5">
+      <table class="table-darker table-hover">
+          <thead>
+          <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let song of album?.songs" (mouseenter)="hoveredSong = song" (mouseleave)="hoveredSong = []">
+              <td class="px-0">
+              <button class="btn btn-sm" (click)="setSong(song)" *ngIf="hoveredSong === song">
+                  <i class="fa fa-play"></i>
+              </button>
+              <span class="btn btn-sm text-light" *ngIf="hoveredSong !== song">{{ song.id }}</span>
+              </td>
+              <td>{{ song.title }}</td>
+              <td>
+              <button style="opacity: 0" class="btn btn-sm text-light" *ngIf="hoveredSong !== song">
+                  <i class="fa fa-square-plus"></i>
+              </button>
+              <button class="btn btn-sm" (click)="addToQueue(song)" *ngIf="hoveredSong === song">
+                  <i class="fa fa-square-plus"></i>
+              </button>
+              </td>
+          </tr>
+          </tbody>
+      </table>
+      </div>
+      
+      <app-player></app-player>
 </div>
-</div>
-
-<div class="table-responsive mt-3 px-5">
-<table class="table-darker table-hover">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Title</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let song of album?.songs" (mouseenter)="hoveredSong = song" (mouseleave)="hoveredSong = []">
-        <td class="px-0">
-        <button class="btn btn-sm" (click)="setSong(song)" *ngIf="hoveredSong === song">
-            <i class="fa fa-play"></i>
-        </button>
-        <span class="btn btn-sm text-light" *ngIf="hoveredSong !== song">{{ song.id }}</span>
-        </td>
-        <td>{{ song.title }}</td>
-        <td>
-        <span class="btn btn-sm text-light" *ngIf="hoveredSong !== song"></span>
-        <button class="btn btn-sm" (click)="addToQueue(song)" *ngIf="hoveredSong === song">
-            <i class="fa fa-square-plus"></i>
-        </button>
-        </td>
-    </tr>
-    </tbody>
-</table>
-</div>
-
-<app-player></app-player>

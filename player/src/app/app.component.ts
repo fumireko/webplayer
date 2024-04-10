@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { StorageService } from './services/storage.service';
 import { AuthService } from './services/auth.service';
+import { AlbumDetailsComponent } from './home/album-details/album-details.component';
+import { StyleService } from './services/style.service';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +17,11 @@ export class AppComponent {
   showAdminBoard = false;
   showModeratorBoard = false;
   username?: string;
+  averageColor: string = "rgb(10, 10, 10)";
 
-  constructor(private storageService: StorageService, private authService: AuthService) { }
+  constructor(private storageService: StorageService, 
+              private authService: AuthService,
+              private styleService: StyleService) { }
 
   ngOnInit(): void {
     this.isLoggedIn = this.storageService.isLoggedIn();
@@ -24,13 +29,13 @@ export class AppComponent {
     if (this.isLoggedIn) {
       const user = this.storageService.getUser();
       this.roles = user.roles;
-
-      console.log(this.roles);
       this.showAdminBoard = this.roles.some(role => role.name === 'ROLE_ADMIN');
       this.showModeratorBoard = this.roles.some(role => role.name === 'ROLE_MODERATOR');
       
       this.username = user.username;
     }
+    
+    this.styleService.averageColor.subscribe(c => this.averageColor = c);
   }
 
   logout(): void {

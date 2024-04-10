@@ -1,5 +1,5 @@
 <div id="app">
-  <div class="topbar">
+  <div class="topbar" [ngStyle]="{'background-color': averageColor}">
     <div class="prev-next-buttons">
       <button type="button" class="fa fas fa-chevron-left" (click)="navigateBack()"></button>
       <button type="button" class="fa fas fa-chevron-right" (click)="navigateForward()"></button>
@@ -7,14 +7,8 @@
 
     <div class="navbar">
       <ul>
-        <li>
-          <a href="#">Premium</a>
-        </li>
-        <li>
-          <a href="#">Support</a>
-        </li>
-        <li>
-          <a href="#">Download</a>
+        <li *ngIf="showAdminBoard">
+          <a href="/admin">Admin Board</a>
         </li>
         <li class="divider">|</li>
         <li *ngIf="!isLoggedIn">
@@ -22,12 +16,6 @@
         </li>
         <li *ngIf="!isLoggedIn">
           <a routerLink="login">Log In</a>
-        </li>
-        <li *ngIf="showAdminBoard">
-          <a href="/admin">Admin Board</a>
-        </li>
-        <li *ngIf="isLoggedIn">
-          <a href="#" (click)="logout()">Logout</a>
         </li>
         <li *ngIf="isLoggedIn" class="dropdown">
           <button class="dropdown-toggle" role="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">

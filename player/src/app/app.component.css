@@ -91,7 +91,6 @@
   .topbar {
     display: flex;
     justify-content: space-between;
-    background-color: #101010;
     padding: 1em 2.5em; /* Changed to em */
   }
   
@@ -151,7 +150,6 @@
     border: 0;
     border-radius: 2.5em; /* Changed to em */
     cursor: pointer;
-    margin-left: 1.25em; /* Changed to em */
   }
   
   .topbar .navbar button:hover,
