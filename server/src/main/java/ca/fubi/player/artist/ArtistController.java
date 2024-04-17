@@ -24,7 +24,7 @@ import ca.fubi.player.album.Album;
 import ca.fubi.player.genre.Genre;
 import ca.fubi.player.song.Song;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/artists")
 public class ArtistController {

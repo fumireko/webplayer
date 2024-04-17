@@ -31,7 +31,7 @@ import ca.fubi.player.song.Song;
 import ca.fubi.player.song.SongRepository;
 import jakarta.servlet.ServletContext;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/files")
 public class FilesController {

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.fubi.player.role.Role;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/users")
 public class UserController {
