@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +25,11 @@ import ca.fubi.player.album.Album;
 import ca.fubi.player.genre.Genre;
 import ca.fubi.player.song.Song;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", 
+methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, 
+allowedHeaders = "*",
+allowCredentials = "true", 
+maxAge = 3600)
 @RestController
 @RequestMapping("/api/artists")
 public class ArtistController {
