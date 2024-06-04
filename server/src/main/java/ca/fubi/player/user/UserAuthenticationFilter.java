@@ -10,6 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ca.fubi.player.ResponseMessageDTO;
 import ca.fubi.player.SecurityConfiguration;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtTokenService jwtTokenService;
+    private JwtTokenService jwtTokenService; 
 
     @Autowired
     private UserRepository userRepository;
@@ -28,18 +31,32 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (checkIfEndpointIsNotPublic(request)) {
-            String token = recoveryToken(request);
-            if (token != null) {
-                String subject = jwtTokenService.getSubjectFromToken(token);
-                User user = userRepository.findByEmail(subject).get();
-                UserDetailsImpl userDetails = new UserDetailsImpl(user);
-
-                Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                throw new RuntimeException("Token is missing.");
+            String token = recoveryToken(request); 
+            try {
+            	if(token != null) {
+            		String subject = jwtTokenService.getSubjectFromToken(token);
+                    User user = userRepository.findByEmail(subject).orElseThrow(
+                    		() -> new RuntimeException("Usuário não encontrado.")
+                    		);
+                    UserDetailsImpl userDetails = new UserDetailsImpl(user);
+                    Authentication authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails.getUsername(), 
+                                null, 
+                                userDetails.getAuthorities()
+                        );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            	}
+            	else throw new RuntimeException("O token está ausente.");
+            } catch (Exception e) {
+            	ResponseMessageDTO errorResponse = new ResponseMessageDTO(e.getMessage());
+                ObjectMapper mapper = new ObjectMapper();
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
+                response.getWriter().write(mapper.writeValueAsString(errorResponse));
+                response.getWriter().flush();
+                return;
             }
         }
         filterChain.doFilter(request, response);
@@ -47,19 +64,15 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null) {
-            return authorizationHeader.replace("Bearer ", "");
-        }
+        if (authorizationHeader != null)
+        	return authorizationHeader.replace("Bearer ", "");
         return null;
     }
 
+    
     private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        boolean a = Arrays.asList(SecurityConfiguration.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).stream()
-                .anyMatch(endpoint -> requestURI.startsWith(endpoint));
-        
-        System.out.println(requestURI + " " + a);
-        return a;
+        return !Arrays.asList(SecurityConfiguration.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED)
+        		.contains(request.getRequestURI());
     }
 
 }

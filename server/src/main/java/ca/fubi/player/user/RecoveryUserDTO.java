@@ -5,7 +5,6 @@ import java.util.List;
 import ca.fubi.player.role.Role;
 
 public record RecoveryUserDTO(
-        Long id,
-        String email,
-        List<Role> roles
-) {}
+		Long id,
+		String email,
+		List<Role> roles) {}

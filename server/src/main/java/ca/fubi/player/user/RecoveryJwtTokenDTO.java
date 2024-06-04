@@ -1,5 +1,4 @@
 package ca.fubi.player.user;
 
-public record RecoveryJwtTokenDTO (
-        String token
-) {}
+public record RecoveryJwtTokenDTO(
+		String token) {}

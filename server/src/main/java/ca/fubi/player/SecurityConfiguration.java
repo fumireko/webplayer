@@ -23,29 +23,17 @@ public class SecurityConfiguration {
     private UserAuthenticationFilter userAuthenticationFilter;
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-    		"/users/*",
-            "/users/signin/*",
-            "/users/signup/*",
-            "/users/signout/*",
-            "/api/albums/*",
-            "/api/artists/*",
-            "/api/artists/*/songs",
-            "/api/genres/*",
-            "/api/playlists/*",
-            "/api/songs/*",
-            "/api/test/*",
-            "files/upload",
-            "/files/upload/*",
-            "/files/*"
-            };
+            "/users/login", // Url que usaremos para fazer login
+            "/users/" // Url que usaremos para criar um usuário
+    };
 
     // Endpoints que requerem autenticação para serem acessados
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
             "/users/test"
     };
 
-    // Endpoints que só podem ser acessador por usuários com permissão de usuário
-    public static final String [] ENDPOINTS_USER = {
+    // Endpoints que só podem ser acessador por usuários com permissão de cliente
+    public static final String [] ENDPOINTS_CUSTOMER = {
             "/users/test/customer"
     };
 
@@ -56,19 +44,15 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.csrf(csrf -> csrf.disable())
-                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
-                    .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-                    .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMIN")
-                    .requestMatchers(ENDPOINTS_USER).hasRole("USER")
-                    .anyRequest().denyAll()
-                )
-                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        return httpSecurity.csrf(csrf -> csrf.disable()) 
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(requests -> requests
+                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
+                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
+                .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMINISTRATOR")
+                .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CUSTOMER")
+                .anyRequest().denyAll()).addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -76,7 +60,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-	public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

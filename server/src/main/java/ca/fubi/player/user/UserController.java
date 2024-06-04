@@ -1,63 +1,31 @@
 package ca.fubi.player.user;
 
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.fubi.player.role.Role;
-
-@CrossOrigin(origins = "http://localhost:4200", 
-methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, 
-allowedHeaders = "*",
-allowCredentials = "true", 
-maxAge = 3600)
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private UserRepository userRepository;
 
-    @PostMapping("/signin")
-    public ResponseEntity<UserTokenDTO> authenticateUser(@RequestBody LoginUserDTO loginUserDto) {
+    @PostMapping("/login")
+    public ResponseEntity<RecoveryJwtTokenDTO> authenticateUser(@RequestBody LoginUserDTO loginUserDto) {
         RecoveryJwtTokenDTO token = userService.authenticateUser(loginUserDto);
-        User u = userRepository.findByEmail(loginUserDto.email()).get();
-        return ResponseEntity.ok(new UserTokenDTO(u.getUsername(), u.getEmail(), u.getPassword(), token.token(), u.getRoles()));
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<Void> createUser(@RequestBody CreateUserDTO createUserDto) {
-    	System.out.println(createUserDto);
+    @PostMapping("/")
+    public ResponseEntity<Object> createUser(@RequestBody CreateUserDTO createUserDto) {
         userService.createUser(createUserDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-    
-    @PostMapping("/signout")
-    public ResponseEntity<RecoveryJwtTokenDTO> clearToken() {
-        ResponseCookie cookie = ResponseCookie.from("auth-user", "")
-                .maxAge(0)
-                .httpOnly(true)
-                .path("/")
-                .build();
-        
-        RecoveryJwtTokenDTO token = new RecoveryJwtTokenDTO(cookie.toString());
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(token);
     }
 
     @GetMapping("/test")
@@ -76,10 +44,3 @@ public class UserController {
     }
 
 }
-
-record UserTokenDTO (
-		String username,
-		String email,
-		String password,
-		String token,
-        Set<Role> roles) {}

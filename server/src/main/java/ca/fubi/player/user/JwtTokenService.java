@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
@@ -14,52 +13,42 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 
 @Service
 public class JwtTokenService {
-
-    @Value("${app.jwtSecret}")
-    private String secretKey;
-
-    @Value("${app.jwtExpirationHours}")
-    private long jwtExpirationHours;
-
-    @Value("${app.jwtIssuer}")
-    private String issuer;
-    
-    @Value("${app.timezone}")
-    private String timeZone;
+    private static final String SECRET_KEY = "4Z^XrroxR@dWxqf$mTTKwW$!@#qGr4P"; 
+    private static final String ISSUER = "pizzurg-api";
 
     public String generateToken(UserDetailsImpl user) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.create()
-                    .withIssuer(issuer)
-                    .withIssuedAt(creationDate())
+                    .withIssuer(ISSUER)
+                    .withIssuedAt(creationDate()) 
                     .withExpiresAt(expirationDate())
                     .withSubject(user.getUsername())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
-            throw new JWTCreationException("Error generating token.", exception);
+            throw new JWTCreationException("Erro ao gerar token.", exception);
         }
     }
 
     public String getSubjectFromToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.require(algorithm)
-                    .withIssuer(issuer)
+                    .withIssuer(ISSUER)
                     .build()
-                    .verify(token)
-                    .getSubject();
+                    .verify(token) 
+                    .getSubject(); 
         } catch (JWTVerificationException exception){
-            throw new JWTVerificationException("Token is invalid or has already expired.");
+            throw new JWTVerificationException("Token inválido ou expirado.");
         }
     }
 
     private Instant creationDate() {
-        return ZonedDateTime.now(ZoneId.of(timeZone)).toInstant();
+        return ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant();
     }
 
     private Instant expirationDate() {
-        return ZonedDateTime.now(ZoneId.of(timeZone)).plusHours(jwtExpirationHours).toInstant();
+        return ZonedDateTime.now(ZoneId.of("America/Recife")).plusHours(4).toInstant();
     }
 
 }

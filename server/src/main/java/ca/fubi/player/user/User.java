@@ -1,10 +1,20 @@
 package ca.fubi.player.user;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 
 import ca.fubi.player.role.Role;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -45,7 +55,7 @@ public class User {
   @Column(name = "password")
   private String password;
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "tb_user_roles", 
              joinColumns = @JoinColumn(name = "fk_user"),
              inverseJoinColumns = @JoinColumn(name = "fk_role"))
