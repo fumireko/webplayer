@@ -24,6 +24,7 @@ public class SecurityConfiguration {
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
     		"/users/*",
+    		"/users/signin",
             "/users/signin/*",
             "/users/signup/*",
             "/users/signout/*",
