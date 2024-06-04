@@ -22,37 +22,14 @@ public class SecurityConfiguration {
     @Autowired
     private UserAuthenticationFilter userAuthenticationFilter;
 
-    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-    		"/users/*",
-    		"/users/signin",
-            "/users/signin/*",
-            "/users/signup/*",
-            "/users/signout/*",
-            "/api/albums/*",
-            "/api/artists/*",
-            "/api/artists/*/songs",
-            "/api/genres/*",
-            "/api/playlists/*",
-            "/api/songs/*",
-            "/api/test/*",
-            "files/upload",
-            "/files/upload/*",
-            "/files/*"
+    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
+    		"/api/**",
     };
 
     // Endpoints que requerem autenticação para serem acessados
-    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/users/test"
-    };
-
-    // Endpoints que só podem ser acessador por usuários com permissão de cliente
-    public static final String [] ENDPOINTS_CUSTOMER = {
-            "/users/test/customer"
-    };
-
-    // Endpoints que só podem ser acessador por usuários com permissão de administrador
-    public static final String [] ENDPOINTS_ADMIN = {
-            "/users/test/administrator"
+    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
+    		"/users/**",
+    		"/files/**"
     };
 
     @Bean
@@ -61,9 +38,7 @@ public class SecurityConfiguration {
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(requests -> requests
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-                .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMINISTRATOR")
-                .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CUSTOMER")
-                .anyRequest().denyAll()).addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .anyRequest().permitAll()).addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

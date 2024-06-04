@@ -1,7 +1,9 @@
 package ca.fubi.player.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,10 +31,24 @@ public class UserController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping("/signup")
     public ResponseEntity<Object> createUser(@RequestBody CreateUserDTO createUserDto) {
         userService.createUser(createUserDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    
+    @PostMapping("/signout")
+    public ResponseEntity<RecoveryJwtTokenDTO> clearToken() {
+        ResponseCookie cookie = ResponseCookie.from("auth-user", "")
+                .maxAge(0)
+                .httpOnly(true)
+                .path("/")
+                .build();
+        
+        RecoveryJwtTokenDTO token = new RecoveryJwtTokenDTO(cookie.toString());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(token);
     }
 
     @GetMapping("/test")
