@@ -33,10 +33,16 @@ public class UserService {
         				loginUserDto.email(), 
         				loginUserDto.password()
 				);
-
+        User user = userRepository.findByEmail(loginUserDto.email()).get();
         Authentication auth = authenticationManager.authenticate(authToken);
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        return new RecoveryJwtTokenDTO(jwtTokenService.generateToken(userDetails));
+        return new RecoveryJwtTokenDTO(
+        		jwtTokenService.generateToken(userDetails),
+        		new RecoveryUserDTO(user.getId(),
+        							user.getUsername(),
+        							user.getEmail(),
+        							user.getRoles())
+        		);
     }
 
     public void createUser(CreateUserDTO createUserDto) {

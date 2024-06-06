@@ -45,7 +45,7 @@ public class UserController {
                 .path("/")
                 .build();
         
-        RecoveryJwtTokenDTO token = new RecoveryJwtTokenDTO(cookie.toString());
+        RecoveryJwtTokenDTO token = new RecoveryJwtTokenDTO(cookie.toString(), null);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(token);
