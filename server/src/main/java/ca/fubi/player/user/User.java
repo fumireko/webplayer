@@ -3,6 +3,7 @@ package ca.fubi.player.user;
 import java.util.Set;
 import java.util.HashSet;
 
+import ca.fubi.player.playlist.Playlist;
 import ca.fubi.player.role.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
@@ -60,6 +62,12 @@ public class User {
              joinColumns = @JoinColumn(name = "fk_user"),
              inverseJoinColumns = @JoinColumn(name = "fk_role"))
   private Set<Role> roles = new HashSet<>();
+  
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "tb_user_playlists",
+  			 joinColumns = @JoinColumn(name = "fk_user"),
+  			 inverseJoinColumns = @JoinColumn(name = "fk_playlist"))
+  private Set<Playlist> playlists = new HashSet<>();
 
   public Long getId() {
     return id;
@@ -101,4 +109,11 @@ public class User {
     this.roles = roles;
   }
 
+  public Set<Playlist> getPlaylists() {
+	  return playlists;
+  }
+  
+  public void setPlaylists(Set<Playlist> playlists) {
+	this.playlists = playlists;
+  }
 }

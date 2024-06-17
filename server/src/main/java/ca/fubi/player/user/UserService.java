@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import ca.fubi.player.SecurityConfiguration;
 import ca.fubi.player.role.Role;
+import ca.fubi.player.role.RoleRepository;
 import ca.fubi.player.user.User;
 
 @Service
@@ -23,6 +24,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private SecurityConfiguration securityConfiguration;
@@ -52,6 +56,7 @@ public class UserService {
                 .password(securityConfiguration.passwordEncoder().encode(createUserDto.password()))
                 .roles(Set.of(Role.builder().name(createUserDto.role()).build()))
                 .build();
+        newUser.getRoles().forEach(r -> roleRepository.save(r));
         userRepository.save(newUser);
     }
 }
